@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@backpackapp-io/react-native-toast": "^0.13.0",
+    "@expo-google-fonts/basic": "^0.2.3",
+    "@expo-google-fonts/dev": "^0.2.3",
     "@expo/vector-icons": "^14.0.4",
     "@gorhom/bottom-sheet": "^5.1.1",
     "@react-native-async-storage/async-storage": "^2.1.1",

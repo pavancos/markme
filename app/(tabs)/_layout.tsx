@@ -1,45 +1,48 @@
 import { Tabs } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ColorValue } from "react-native";
+import AppHeader from "@/components/AppHeader";
 
 export default function TabLayout() {
   return (
     <Tabs
-      screenOptions={{
-        tabBarStyle: { backgroundColor: "black", borderTopWidth: 0 },
-        tabBarActiveTintColor: "yellow",
-        tabBarInactiveTintColor: "white",
-        headerShown: false,
-        tabBarShowLabel: false
-      }}
+      screenOptions={({ route }) => ({
+        tabBarStyle: { backgroundColor: "#2f2f2f", borderTopWidth: 0, paddingTop: 8 },
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "#999",
+        headerShown: true,
+        tabBarShowLabel: false,
+        header: () => <AppHeader />,
+      })}
     >
       <Tabs.Screen
         name="home"
         options={{
-          tabBarIcon: ({ color }) => <MaterialIcons name="home" size={24} color={color} />,
+          tabBarIcon: ({ color }: { color: ColorValue }) => <MaterialCommunityIcons name="home-outline" size={26} color={color} />,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          tabBarIcon: ({ color }) => <MaterialIcons name="explore" size={24} color={color} />,
+          tabBarIcon: ({ color }: { color: ColorValue }) => <MaterialCommunityIcons name="compass-outline" size={26} color={color} />,
         }}
       />
       <Tabs.Screen
         name="create"
         options={{
-          tabBarIcon: ({ color }) => <MaterialIcons name="add-circle-outline" size={24} color={color} />,
+          tabBarIcon: ({ color }: { color: ColorValue }) => <MaterialCommunityIcons name="plus-circle-outline" size={26} color={color} />,
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          tabBarIcon: ({ color }) => <MaterialIcons name="notifications" size={24} color={color} />,
+          tabBarIcon: ({ color }: { color: ColorValue }) => <MaterialCommunityIcons name="heart-outline" size={26} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ color }) => <MaterialIcons name="person" size={24} color={color} />,
+          tabBarIcon: ({ color }: { color: ColorValue }) => <MaterialCommunityIcons name="account-outline" size={26} color={color} />,
         }}
       />
     </Tabs>

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, TextBox, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -19,7 +19,7 @@ export default function LoadingScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "black", justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ color: "red", fontSize: 20 }}>Loading...</Text>
+      <TextBox style={{ color: "red", fontSize: 20 }}>Loading...</TextBox>
       <ActivityIndicator size="large" color="yellow" />
     </View>
   );

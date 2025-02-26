@@ -2,24 +2,36 @@ import React, { useState, useRef } from "react";
 import * as Haptics from 'expo-haptics';
 import {
   View,
-  Text,
   TextInput,
   Pressable,
   StyleSheet,
   ScrollView,
   Platform,
 } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
 import { useForm, Controller } from "react-hook-form";
 import _ from "lodash";
 import { useRouter } from "expo-router";
-import { ChevronDown } from "lucide-react-native";
 import { KeyboardAvoidingView } from "react-native";
 import { BE_URL } from "@/constants/config";
 import { toast } from "@backpackapp-io/react-native-toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFonts, Basic_400Regular } from "@expo-google-fonts/basic";
+import TextBox from "@/components/TextBox";
 
 export default function LoginScreen() {
+  const [fontsLoaded] = useFonts({
+    Basic_400Regular,
+
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return <LoginScreenContent />;
+}
+
+function LoginScreenContent() {
   const {
     control,
     handleSubmit,
@@ -70,11 +82,11 @@ export default function LoginScreen() {
         showsVerticalScrollIndicator={false}
       >
 
-        <Text style={styles.heading}>Login</Text>
-        <Text style={styles.des}>Let's get you logged in</Text>
+        <TextBox style={[styles.heading, styles.font]}>Login</TextBox>
+        <TextBox style={[styles.des, styles.font]}>Let's get you logged in</TextBox>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>E-mail or Username</Text>
+          <TextBox style={[styles.label, styles.font]}>E-mail or Username</TextBox>
           <Controller
             control={control}
             rules={{
@@ -109,10 +121,10 @@ export default function LoginScreen() {
             name="id"
           />
           {errors.id && (
-            <Text style={styles.errorText}>Enter valid Username or Password</Text>
+            <TextBox style={[styles.errorText, styles.font]}>Enter valid Username or Password</TextBox>
           )}
 
-          <Text style={styles.label}>Password</Text>
+          <TextBox style={[styles.label, styles.font]}>Password</TextBox>
           <Controller
             control={control}
             rules={{ required: true, minLength: 6 }}
@@ -135,20 +147,20 @@ export default function LoginScreen() {
             name="password"
           />
           {errors.password && (
-            <Text style={styles.errorText}>
+            <TextBox style={[styles.errorText, styles.font]}>
               Password must be at least 6 characters.
-            </Text>
+            </TextBox>
           )}
 
           <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.submitText}>Login</Text>
+            <TextBox style={[styles.submitText, styles.font]}>Login</TextBox>
           </Pressable>
         </View>
 
-        <Text style={styles.account}>
+        <TextBox style={[styles.account, styles.font]}>
           Don't have an account? ?{" "}
-          <Text onPress={() => router.push("/auth/signup")} style={styles.login}>Sign Up</Text>
-        </Text>
+          <TextBox onPress={() => router.push("/auth/signup")} style={[styles.login, styles.font]}>Sign Up</TextBox>
+        </TextBox>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -156,18 +168,19 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   container: {
     flex: 1,
     backgroundColor: "black",
-    padding: 20,
+    padding: 20
   },
   heading: {
     color: "white",
     fontSize: 36,
     fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: "Basic_400Regular"
   },
   des: {
     color: "white",
@@ -234,5 +247,8 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  font: {
+    fontFamily: "Basic_400Regular",
   },
 });

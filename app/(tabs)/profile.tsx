@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet } from 'react-native';
-
+import { View, StyleSheet } from 'react-native';
+import TextBox from '@/components/TextBox';
 export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Profile Screen</Text>
+      <TextBox style={styles.text}>Profile Screen</TextBox>
     </View>
   );
 }

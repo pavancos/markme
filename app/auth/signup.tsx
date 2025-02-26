@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import * as Haptics from 'expo-haptics';
 import {
   View,
-  Text,
   TextInput,
   Pressable,
   StyleSheet,
@@ -17,6 +16,7 @@ import { ChevronDown } from "lucide-react-native";
 import { KeyboardAvoidingView } from "react-native";
 import { BE_URL } from "@/constants/config";
 import { toast } from "@backpackapp-io/react-native-toast";
+import TextBox from "@/components/TextBox";
 
 export default function SignUpScreen() {
   const {
@@ -92,11 +92,11 @@ export default function SignUpScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.heading}>Sign Up</Text>
-        <Text style={styles.des}>Let's setup your account</Text>
+        <TextBox style={styles.heading}>Sign Up</TextBox>
+        <TextBox style={styles.des}>Let's setup your account</TextBox>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Username</Text>
+          <TextBox style={styles.label}>Username</TextBox>
           <Controller
             control={control}
             rules={{
@@ -131,13 +131,13 @@ export default function SignUpScreen() {
             name="username"
           />
           {!isUsernameAvailable && (
-            <Text style={styles.errorText}>Username is not Available</Text>
+            <TextBox style={styles.errorText}>Username is not Available</TextBox>
           )}
           {errors.username && (
-            <Text style={styles.errorText}>{errors.username.message}</Text>
+            <TextBox style={styles.errorText}>{errors.username.message}</TextBox>
           )}
 
-          <Text style={styles.label}>Email</Text>
+          <TextBox style={styles.label}>Email</TextBox>
           <Controller
             control={control}
             rules={{ required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }}
@@ -161,10 +161,10 @@ export default function SignUpScreen() {
             name="email"
           />
           {errors.email && (
-            <Text style={styles.errorText}>{errors.email.message}</Text>
+            <TextBox style={styles.errorText}>{errors.email.message}</TextBox>
           )}
 
-          <Text style={styles.label}>Password</Text>
+          <TextBox style={styles.label}>Password</TextBox>
           <Controller
             control={control}
             rules={{ required: true, minLength: 6 }}
@@ -186,12 +186,12 @@ export default function SignUpScreen() {
             name="password"
           />
           {errors.password && (
-            <Text style={styles.errorText}>
+            <TextBox style={styles.errorText}>
               Password must be at least 6 characters.
-            </Text>
+            </TextBox>
           )}
 
-          <Text style={styles.label}>Full Name</Text>
+          <TextBox style={styles.label}>Full Name</TextBox>
           <Controller
             control={control}
             rules={{ required: true }}
@@ -218,10 +218,10 @@ export default function SignUpScreen() {
             name="fullname"
           />
           {errors.fullname && (
-            <Text style={styles.errorText}>Full name is required.</Text>
+            <TextBox style={styles.errorText}>Full name is required.</TextBox>
           )}
 
-          <Text style={styles.label}>Gender</Text>
+          <TextBox style={styles.label}>Gender</TextBox>
           <Pressable
             onPress={() => {
               if (pickerRef.current) {
@@ -262,14 +262,14 @@ export default function SignUpScreen() {
           </Pressable>
 
           <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.submitText}>Create Account</Text>
+            <TextBox style={styles.submitText}>Create Account</TextBox>
           </Pressable>
         </View>
 
-        <Text style={styles.account}>
+        <TextBox style={styles.account}>
           Already have an account?{" "}
-          <Text onPress={() => router.push("/auth/login")} style={styles.login}>Login</Text>
-        </Text>
+          <TextBox onPress={() => router.push("/auth/login")} style={styles.login}>Login</TextBox>
+        </TextBox>
       </ScrollView>
     </KeyboardAvoidingView>
   );

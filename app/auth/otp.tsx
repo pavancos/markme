@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import * as Haptics from "expo-haptics";
 import {
     View,
-    Text,
     TextInput,
     StyleSheet,
     Pressable,
@@ -12,6 +11,7 @@ import {
 import { BE_URL } from "@/constants/config";
 import { router, useGlobalSearchParams } from "expo-router";
 import { toast } from "@backpackapp-io/react-native-toast";
+import TextBox from "@/components/TextBox";
 
 const OTPInput = () => {
     const otpLength = 6;
@@ -76,11 +76,11 @@ const OTPInput = () => {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-            <Text style={styles.heading}>Enter OTP</Text>
-            <Text style={styles.description}>OTP has been sent to :</Text>
-            <Text style={styles.email}>{email}</Text>
+            <TextBox style={styles.heading}>Enter OTP</TextBox>
+            <TextBox style={styles.description}>OTP has been sent to :</TextBox>
+            <TextBox style={styles.email}>{email}</TextBox>
             <Pressable onPress={() => router.push("/auth/signup")}>
-                <Text style={styles.back}>Not this?</Text>
+                <TextBox style={styles.back}>Not this?</TextBox>
             </Pressable>
 
             <View style={styles.otpContainer}>
@@ -104,7 +104,7 @@ const OTPInput = () => {
             </View>
 
             <Pressable style={styles.submitBtn} onPress={() => onSubmit(otp.join(""))}>
-                <Text style={styles.submitText}>Verify OTP</Text>
+                <TextBox style={styles.submitText}>Verify OTP</TextBox>
             </Pressable>
         </KeyboardAvoidingView>
     );

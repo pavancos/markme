@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from "expo-font";
+import TextBox from "@/components/TextBox";
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -16,7 +17,7 @@ export default function App() {
             try {
                 const token = await AsyncStorage.getItem("token");
                 //@ts-ignore
-                router.replace(token ? "/auth/login" : "/auth/login");
+                router.replace(token ? "/(tabs)/home" : "/auth/login");
                 await new Promise(resolve => setTimeout(resolve, 2000));
             } catch (e) {
                 console.warn(e);
@@ -40,7 +41,7 @@ export default function App() {
         //     onLayout={onLayoutRootView}>
         <View
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ color: "yellow", fontSize: 40 }}>MarkMe</Text>
+            <TextBox style={{ color: "yellow", fontSize: 40 }}>MarkMe</TextBox>
         </View>
     );
 }

@@ -1,5 +1,5 @@
 import { Tabs, Slot } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { toast, Toasts } from '@backpackapp-io/react-native-toast';
