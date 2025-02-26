@@ -6,12 +6,14 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
+  Platform,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { useForm, Controller } from "react-hook-form";
 import _ from "lodash";
 import { useRouter } from "expo-router";
 import { ChevronDown } from "lucide-react-native";
+import { KeyboardAvoidingView } from "react-native";
 
 export default function SignUpScreen() {
   const {
@@ -54,178 +56,186 @@ export default function SignUpScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.heading}>Sign Up</Text>
-        <Text style={styles.des}>Let's setup your account</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+    >
+      <ScrollView>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Username</Text>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-              pattern: {
-                value: /^[a-z._-]+$/,
-                message: "Only [a-z], '.', '_', and '-' are allowed.",
-              },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="Enter username"
-                placeholderTextColor={"#888"}
-                onBlur={onBlur}
-                onChangeText={(text) => {
-                  onChange(text);
-                  debouncedCheckUsername(text);
-                }}
-                value={value}
-                autoCapitalize="none"
-                autoCorrect={false}
-                autoFocus
-                returnKeyType="next"
-                onSubmitEditing={() => emailRef.current?.focus()}
-              />
-            )}
-            name="username"
-          />
-          {!isUsernameAvailable && (
-            <Text style={styles.errorText}>Username already taken.</Text>
-          )}
-          {errors.username && (
-            <Text style={styles.errorText}>Username is required.</Text>
-          )}
+      <Text style={styles.heading}>Sign Up</Text>
+      <Text style={styles.des}>Let's setup your account</Text>
 
-          <Text style={styles.label}>Email</Text>
-          <Controller
-            control={control}
-            rules={{ required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                ref={emailRef}
-                style={styles.input}
-                placeholder="Enter email"
-                placeholderTextColor={"#888"}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                returnKeyType="next"
-                onSubmitEditing={() => passwordRef.current?.focus()}
-              />
-            )}
-            name="email"
-          />
-          {errors.email && (
-            <Text style={styles.errorText}>Valid email is required.</Text>
-          )}
-
-          <Text style={styles.label}>Password</Text>
-          <Controller
-            control={control}
-            rules={{ required: true, minLength: 6 }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                ref={passwordRef}
-                style={styles.input}
-                placeholder="Enter password"
-                placeholderTextColor={"#888"}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                secureTextEntry
-                returnKeyType="next"
-                onSubmitEditing={() => fullNameRef.current?.focus()}
-              />
-            )}
-            name="password"
-          />
-          {errors.password && (
-            <Text style={styles.errorText}>
-              Password must be at least 6 characters.
-            </Text>
-          )}
-
-          <Text style={styles.label}>Full Name</Text>
-          <Controller
-            control={control}
-            rules={{ required: true }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                ref={fullNameRef}
-                style={styles.input}
-                placeholder="Enter full name"
-                placeholderTextColor={"#888"}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                returnKeyType="done"
-                onSubmitEditing={() => {
-                  if (pickerRef.current) {
-                    // @ts-ignore
-                    pickerRef.current?.togglePicker();
-                  }
-                }}
-              />
-            )}
-            name="fullName"
-          />
-          {errors.fullName && (
-            <Text style={styles.errorText}>Full name is required.</Text>
-          )}
-
-          <Text style={styles.label}>Gender</Text>
-          <Pressable
-            onPress={() => {
-              if (pickerRef.current) {
-                // @ts-ignore
-                pickerRef.current?.togglePicker();
-              }
-            }}
-          >
-            <Controller
-              control={control}
-              name="gender"
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.pickerContainer}>
-                  <RNPickerSelect
-                    ref={pickerRef}
-                    darkTheme={true}
-                    value={value}
-                    onValueChange={(gender) => onChange(gender)}
-                    items={[
-                      { label: "Male", value: "Male" },
-                      { label: "Female", value: "Female" },
-                    ]}
-                    useNativeAndroidPickerStyle={false}
-                    style={{
-                      inputIOS: styles.pickerInput,
-                      inputAndroid: styles.pickerInput,
-                      placeholder: { color: "#888" },
-                    }}
-                    placeholder={{ label: "Select Gender", value: null, color: "#888" }}
-                    Icon={() => (
-                      <ChevronDown color="#888" size={24} style={styles.iconContainer} />
-                    )}
-                  />
-                </View>
-              )}
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Username</Text>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+            pattern: {
+              value: /^[a-z._-]+$/,
+              message: "Only [a-z], '.', '_', and '-' are allowed.",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Enter username"
+              placeholderTextColor={"#888"}
+              onBlur={onBlur}
+              onChangeText={(text) => {
+                onChange(text);
+                debouncedCheckUsername(text);
+              }}
+              value={value}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                if (isUsernameAvailable) {
+                  emailRef.current?.focus();
+                }
+              }}
             />
-          </Pressable>
+          )}
+          name="username"
+        />
+        {!isUsernameAvailable && (
+          <Text style={styles.errorText}>Username already taken.</Text>
+        )}
+        {errors.username && (
+          <Text style={styles.errorText}>Username is required.</Text>
+        )}
 
-          <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.submitText}>Create Account</Text>
-          </Pressable>
-        </View>
+        <Text style={styles.label}>Email</Text>
+        <Controller
+          control={control}
+          rules={{ required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              ref={emailRef}
+              style={styles.input}
+              placeholder="Enter email"
+              placeholderTextColor={"#888"}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current?.focus()}
+            />
+          )}
+          name="email"
+        />
+        {errors.email && (
+          <Text style={styles.errorText}>Valid email is required.</Text>
+        )}
 
-        <Text style={styles.account}>
-          Already have an account?{" "}
-          <Text onPress={() => router.push("/auth/login")} style={styles.login}>Login</Text>
-        </Text>
+        <Text style={styles.label}>Password</Text>
+        <Controller
+          control={control}
+          rules={{ required: true, minLength: 6 }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              ref={passwordRef}
+              style={styles.input}
+              placeholder="Enter password"
+              placeholderTextColor={"#888"}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              secureTextEntry
+              returnKeyType="next"
+              onSubmitEditing={() => fullNameRef.current?.focus()}
+            />
+          )}
+          name="password"
+        />
+        {errors.password && (
+          <Text style={styles.errorText}>
+            Password must be at least 6 characters.
+          </Text>
+        )}
+
+        <Text style={styles.label}>Full Name</Text>
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              ref={fullNameRef}
+              style={styles.input}
+              placeholder="Enter full name"
+              placeholderTextColor={"#888"}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                if (pickerRef.current) {
+                  // @ts-ignore
+                  pickerRef.current?.togglePicker();
+                }
+              }}
+            />
+          )}
+          name="fullName"
+        />
+        {errors.fullName && (
+          <Text style={styles.errorText}>Full name is required.</Text>
+        )}
+
+        <Text style={styles.label}>Gender</Text>
+        <Pressable
+          onPress={() => {
+            if (pickerRef.current) {
+              // @ts-ignore
+              pickerRef.current?.togglePicker();
+            }
+          }}
+        >
+          <Controller
+            control={control}
+            name="gender"
+            render={({ field: { onChange, value } }) => (
+              <View style={styles.pickerContainer}>
+                <RNPickerSelect
+                  ref={pickerRef}
+                  darkTheme={true}
+                  value={value}
+                  onValueChange={(gender) => onChange(gender)}
+                  items={[
+                    { label: "Male", value: "Male" },
+                    { label: "Female", value: "Female" },
+                  ]}
+                  useNativeAndroidPickerStyle={false}
+                  style={{
+                    inputIOS: styles.pickerInput,
+                    inputAndroid: styles.pickerInput,
+                    placeholder: { color: "#888" },
+                  }}
+                  placeholder={{ label: "Select Gender", value: null, color: "#888" }}
+                  Icon={() => (
+                    <ChevronDown color="#888" size={24} style={styles.iconContainer} />
+                  )}
+                />
+              </View>
+            )}
+          />
+        </Pressable>
+
+        <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
+          <Text style={styles.submitText}>Create Account</Text>
+        </Pressable>
       </View>
-    </ScrollView>
+
+      <Text style={styles.account}>
+        Already have an account?{" "}
+        <Text onPress={() => router.push("/auth/login")} style={styles.login}>Login</Text>
+      </Text>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
