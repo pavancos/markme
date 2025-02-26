@@ -16,7 +16,8 @@ export default function Layout() {
     checkToken();
   }, []);
 
-  if (isLoading) return null; // Prevents flickering while checking token
+  if (isLoading) 
+    return null;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
@@ -25,6 +26,8 @@ export default function Layout() {
       ) : (
         <Stack.Screen name="auth"  options={{statusBarBackgroundColor:'black'}} />
       )}
+
     </Stack>
+    
   );
 }
