@@ -21,9 +21,9 @@ export default function Layout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
-        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(tabs)" options={{statusBarBackgroundColor:'black'}} />
       ) : (
-        <Stack.Screen name="auth" />
+        <Stack.Screen name="auth"  options={{statusBarBackgroundColor:'black'}} />
       )}
     </Stack>
   );

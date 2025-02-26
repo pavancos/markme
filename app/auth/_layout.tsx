@@ -1,16 +1,24 @@
-import { Tabs } from "expo-router";
+import { Tabs, Slot } from "expo-router";
+import { View, Text, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthLayout() {
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarStyle: { backgroundColor: "black" },
-        tabBarActiveTintColor: "yellow",
-        tabBarInactiveTintColor: "white",
-      }}
-    >
-      <Tabs.Screen name="signup" options={{ title: "Sign Up" }} />
-      <Tabs.Screen name="login" options={{ title: "Log In" }} />
-    </Tabs>
-  );
+    return (
+        <SafeAreaView style={styles.container}>
+            <Slot/>
+        </SafeAreaView>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    text: {
+        color: 'yellow',
+        fontSize: 20,
+    },
+})

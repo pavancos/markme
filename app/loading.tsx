@@ -11,7 +11,7 @@ export default function LoadingScreen() {
         router.replace("/");
       } else {
         // @ts-ignore
-        router.replace("/auth/login");
+        router.replace("/auth/signup");
       }
     };
     setTimeout(checkToken, 2000); // Simulating loading
