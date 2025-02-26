@@ -39,7 +39,7 @@ export default function SignUpScreen() {
   const emailRef = useRef<TextInput | null>(null);
   const passwordRef = useRef<TextInput | null>(null);
   const fullNameRef = useRef<TextInput | null>(null);
-  const [registerDetails,setRegisterDetails] = useState(null)
+  const [registerDetails, setRegisterDetails] = useState(null);
 
   const debouncedCheckUsername = _.debounce(async (username: string) => {
     if (!username || username.length < 6) {
@@ -57,14 +57,14 @@ export default function SignUpScreen() {
     if (!isUsernameAvailable) {
       return;
     }
-    data.profilePhoto="null";
+    data.profilePhoto = "null";
     const response = await fetch(`${BE_URL}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
-    })
+    });
     const res = await response.json();
     if (!res.error) {
       setRegisterDetails(data);
@@ -73,7 +73,7 @@ export default function SignUpScreen() {
         pathname: "/auth/otp",
         params: { email: data.email }
       });
-    }else{
+    } else {
       console.log(res);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       toast("Cannot SignUp!");
@@ -92,7 +92,6 @@ export default function SignUpScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-
         <Text style={styles.heading}>Sign Up</Text>
         <Text style={styles.des}>Let's setup your account</Text>
 
@@ -103,8 +102,8 @@ export default function SignUpScreen() {
             rules={{
               required: true,
               pattern: {
-                value: /^[a-z._-]+$/,
-                message: "Only [a-z], '.', '_', and '-' are allowed.",
+                value: /^[a-z0-9._-]+$/,
+                message: "Only [a-z and 0-9], '.', '_', and '-' are allowed.",
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -120,6 +119,7 @@ export default function SignUpScreen() {
                 value={value}
                 autoCapitalize="none"
                 autoCorrect={false}
+                autoComplete="off"
                 returnKeyType="next"
                 onSubmitEditing={() => {
                   if (isUsernameAvailable) {
@@ -134,7 +134,7 @@ export default function SignUpScreen() {
             <Text style={styles.errorText}>Username is not Available</Text>
           )}
           {errors.username && (
-            <Text style={styles.errorText}>Username is required.</Text>
+            <Text style={styles.errorText}>{errors.username.message}</Text>
           )}
 
           <Text style={styles.label}>Email</Text>
@@ -151,6 +151,8 @@ export default function SignUpScreen() {
                 onChangeText={onChange}
                 value={value}
                 keyboardType="email-address"
+                autoComplete="email"
+                textContentType="emailAddress"
                 autoCapitalize="none"
                 returnKeyType="next"
                 onSubmitEditing={() => passwordRef.current?.focus()}
@@ -159,7 +161,7 @@ export default function SignUpScreen() {
             name="email"
           />
           {errors.email && (
-            <Text style={styles.errorText}>Valid email is required.</Text>
+            <Text style={styles.errorText}>{errors.email.message}</Text>
           )}
 
           <Text style={styles.label}>Password</Text>
@@ -177,6 +179,7 @@ export default function SignUpScreen() {
                 value={value}
                 secureTextEntry
                 returnKeyType="next"
+                textContentType="newPassword"
                 onSubmitEditing={() => fullNameRef.current?.focus()}
               />
             )}
@@ -202,6 +205,8 @@ export default function SignUpScreen() {
                 onChangeText={onChange}
                 value={value}
                 returnKeyType="done"
+                textContentType="name"
+                autoComplete="name"
                 onSubmitEditing={() => {
                   if (pickerRef.current) {
                     // @ts-ignore

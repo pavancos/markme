@@ -10,7 +10,7 @@ import {
     Platform,
 } from "react-native";
 import { BE_URL } from "@/constants/config";
-import { Link, router, useGlobalSearchParams } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { toast } from "@backpackapp-io/react-native-toast";
 
 const OTPInput = () => {
@@ -19,30 +19,38 @@ const OTPInput = () => {
     const inputRefs = useRef<Array<TextInput | null>>([]);
     let { email } = useGlobalSearchParams();
     if (email === undefined) {
-        email = "random@gmail.com"
+        email = "random@gmail.com";
     }
+
     const onSubmit = async (otp: string) => {
         console.log(otp);
-        const response = await fetch(`${BE_URL}/auth/verifyOtp`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                otp: otp,
-            }),
-        })
-        const res = await response.json();
-        if (!res.error) {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          router.push("/auth/login");
-        }else{
-          console.log(res);
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-          toast("⚠️ Invalid OTP");
+        try {
+            const response = await fetch(`${BE_URL}/auth/verifyOtp`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                    otp: otp,
+                }),
+            });
+            const res = await response.json();
+            if (!res.error) {
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                router.push("/auth/login");
+            } else {
+                console.log(res);
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                toast("⚠️ Invalid OTP");
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            toast("⚠️ Network error, please try again");
         }
     };
+
     const handleChange = (text: string, index: number) => {
         if (/^\d?$/.test(text)) {
             const newOtp = [...otp];
@@ -67,13 +75,11 @@ const OTPInput = () => {
     };
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
             <Text style={styles.heading}>Enter OTP</Text>
             <Text style={styles.description}>OTP has been sent to :</Text>
             <Text style={styles.email}>{email}</Text>
-            <Pressable onPress={() => {
-                router.push("/auth/signup");
-            }}>
+            <Pressable onPress={() => router.push("/auth/signup")}>
                 <Text style={styles.back}>Not this?</Text>
             </Pressable>
 
@@ -92,6 +98,7 @@ const OTPInput = () => {
                                 handleBackspace(index);
                             }
                         }}
+                        textContentType="oneTimeCode"
                     />
                 ))}
             </View>
@@ -99,7 +106,6 @@ const OTPInput = () => {
             <Pressable style={styles.submitBtn} onPress={() => onSubmit(otp.join(""))}>
                 <Text style={styles.submitText}>Verify OTP</Text>
             </Pressable>
-
         </KeyboardAvoidingView>
     );
 };
@@ -132,7 +138,7 @@ const styles = StyleSheet.create({
         color: "#b1b1b2",
         fontSize: 16,
         fontWeight: "bold",
-        marginBottom: 3
+        marginBottom: 3,
     },
     otpContainer: {
         flexDirection: "row",
