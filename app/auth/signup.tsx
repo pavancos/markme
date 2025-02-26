@@ -27,20 +27,24 @@ export default function SignUpScreen() {
       gender: "Male",
     },
   });
-
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
   const router = useRouter();
-  const [form, setForm] = useState({ gender: "Male" });
   const pickerRef = useRef<RNPickerSelect | null>(null);
 
-  const debouncedCheckUsername = _.debounce((username: string) => {
+  const debouncedCheckUsername = _.debounce(async (username: string) => {
     console.log(`Checking eligibility for username: ${username}`);
+    const res = await fetch("https://markmeengine.vercel.app/v1/auth/checkUser?username=" + username)
+    const data = await res.json()
+    console.log(data)
+    setIsUsernameAvailable(!data.error)
   }, 500);
 
   const onSubmit = (data: any) => {
+    if (!isUsernameAvailable) {
+      console.log("Username already taken.");
+      return;
+    }
     console.log(data);
-
-
-
   };
 
   return (
@@ -53,7 +57,13 @@ export default function SignUpScreen() {
           <Text style={styles.label}>Username</Text>
           <Controller
             control={control}
-            rules={{ required: true }}
+            rules={{
+              required: true,
+              pattern: {
+                value: /^[a-z._-]+$/,
+                message: "Only [a-z], '.', '_', and '-' are allowed.",
+              }
+            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 style={styles.input}
@@ -65,10 +75,16 @@ export default function SignUpScreen() {
                   debouncedCheckUsername(text);
                 }}
                 value={value}
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoFocus={true}
               />
             )}
             name="username"
           />
+          {!isUsernameAvailable && (
+            <Text style={styles.errorText}>Username already taken.</Text>
+          )}
           {errors.username && (
             <Text style={styles.errorText}>Username is required.</Text>
           )}
@@ -179,7 +195,7 @@ export default function SignUpScreen() {
           </Pressable>
 
           <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.submitText}>Sign Up</Text>
+            <Text style={styles.submitText}>Create Account</Text>
           </Pressable>
         </View>
 
