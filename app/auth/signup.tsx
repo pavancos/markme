@@ -71,7 +71,7 @@ export default function SignUpScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.push({
         pathname: "/auth/otp",
-        params: { data: JSON.stringify(data) }
+        params: { email: data.email }
       });
     }else{
       console.log(res);
