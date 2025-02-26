@@ -27,16 +27,22 @@ export default function SignUpScreen() {
       gender: "Male",
     },
   });
+
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
   const router = useRouter();
   const pickerRef = useRef<RNPickerSelect | null>(null);
+  const emailRef = useRef<TextInput | null>(null);
+  const passwordRef = useRef<TextInput | null>(null);
+  const fullNameRef = useRef<TextInput | null>(null);
 
   const debouncedCheckUsername = _.debounce(async (username: string) => {
     console.log(`Checking eligibility for username: ${username}`);
-    const res = await fetch("https://markmeengine.vercel.app/v1/auth/checkUser?username=" + username)
-    const data = await res.json()
-    console.log(data)
-    setIsUsernameAvailable(!data.error)
+    const res = await fetch(
+      "https://markmeengine.vercel.app/v1/auth/checkUser?username=" + username
+    );
+    const data = await res.json();
+    console.log(data);
+    setIsUsernameAvailable(!data.error);
   }, 500);
 
   const onSubmit = (data: any) => {
@@ -62,7 +68,7 @@ export default function SignUpScreen() {
               pattern: {
                 value: /^[a-z._-]+$/,
                 message: "Only [a-z], '.', '_', and '-' are allowed.",
-              }
+              },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
@@ -77,7 +83,9 @@ export default function SignUpScreen() {
                 value={value}
                 autoCapitalize="none"
                 autoCorrect={false}
-                autoFocus={true}
+                autoFocus
+                returnKeyType="next"
+                onSubmitEditing={() => emailRef.current?.focus()}
               />
             )}
             name="username"
@@ -95,6 +103,7 @@ export default function SignUpScreen() {
             rules={{ required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+                ref={emailRef}
                 style={styles.input}
                 placeholder="Enter email"
                 placeholderTextColor={"#888"}
@@ -103,6 +112,8 @@ export default function SignUpScreen() {
                 value={value}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
               />
             )}
             name="email"
@@ -117,6 +128,7 @@ export default function SignUpScreen() {
             rules={{ required: true, minLength: 6 }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+                ref={passwordRef}
                 style={styles.input}
                 placeholder="Enter password"
                 placeholderTextColor={"#888"}
@@ -124,6 +136,8 @@ export default function SignUpScreen() {
                 onChangeText={onChange}
                 value={value}
                 secureTextEntry
+                returnKeyType="next"
+                onSubmitEditing={() => fullNameRef.current?.focus()}
               />
             )}
             name="password"
@@ -140,12 +154,20 @@ export default function SignUpScreen() {
             rules={{ required: true }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+                ref={fullNameRef}
                 style={styles.input}
                 placeholder="Enter full name"
                 placeholderTextColor={"#888"}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                returnKeyType="done"
+                onSubmitEditing={() => {
+                  if (pickerRef.current) {
+                    // @ts-ignore
+                    pickerRef.current?.togglePicker();
+                  }
+                }}
               />
             )}
             name="fullName"
@@ -154,7 +176,7 @@ export default function SignUpScreen() {
             <Text style={styles.errorText}>Full name is required.</Text>
           )}
 
-          {/* Gender Picker with Dropdown Button */}
+          <Text style={styles.label}>Gender</Text>
           <Pressable
             onPress={() => {
               if (pickerRef.current) {
@@ -163,7 +185,6 @@ export default function SignUpScreen() {
               }
             }}
           >
-            <Text style={styles.label}>Gender</Text>
             <Controller
               control={control}
               name="gender"
@@ -203,7 +224,6 @@ export default function SignUpScreen() {
           Already have an account?{" "}
           <Text onPress={() => router.push("/auth/login")} style={styles.login}>Login</Text>
         </Text>
-
       </View>
     </ScrollView>
   );
