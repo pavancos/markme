@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import * as Haptics from 'expo-haptics';
 import {
   View,
   Text,
@@ -14,6 +15,8 @@ import _ from "lodash";
 import { useRouter } from "expo-router";
 import { ChevronDown } from "lucide-react-native";
 import { KeyboardAvoidingView } from "react-native";
+import { BE_URL } from "@/constants/config";
+import { toast } from "@backpackapp-io/react-native-toast";
 
 export default function SignUpScreen() {
   const {
@@ -25,7 +28,7 @@ export default function SignUpScreen() {
       username: "",
       email: "",
       password: "",
-      fullName: "",
+      fullname: "",
       gender: "Male",
     },
   });
@@ -36,25 +39,44 @@ export default function SignUpScreen() {
   const emailRef = useRef<TextInput | null>(null);
   const passwordRef = useRef<TextInput | null>(null);
   const fullNameRef = useRef<TextInput | null>(null);
+  const [registerDetails,setRegisterDetails] = useState(null)
 
   const debouncedCheckUsername = _.debounce(async (username: string) => {
-    console.log(`Checking eligibility for username: ${username}`);
-    if(!username || username.length<=6){
+    if (!username || username.length < 6) {
       setIsUsernameAvailable(false);
       return;
     }
     const res = await fetch(
-      "https://markmeengine.vercel.app/v1/auth/checkUser?username=" + username
+      `${BE_URL}/auth/checkUser?username=${username}`
     );
     const data = await res.json();
-    console.log(data);
     setIsUsernameAvailable(!data.error);
   }, 500);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     if (!isUsernameAvailable) {
-      console.log("Username already taken.");
       return;
+    }
+    data.profilePhoto="null";
+    const response = await fetch(`${BE_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    const res = await response.json();
+    if (!res.error) {
+      setRegisterDetails(data);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.push({
+        pathname: "/auth/otp",
+        params: { data: JSON.stringify(data) }
+      });
+    }else{
+      console.log(res);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      toast("Cannot SignUp!");
     }
     console.log(data);
   };
@@ -188,9 +210,9 @@ export default function SignUpScreen() {
                 }}
               />
             )}
-            name="fullName"
+            name="fullname"
           />
-          {errors.fullName && (
+          {errors.fullname && (
             <Text style={styles.errorText}>Full name is required.</Text>
           )}
 

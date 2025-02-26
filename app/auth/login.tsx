@@ -8,7 +8,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     // await AsyncStorage.setItem("token", "dummy_token");
     // @ts-ignore
-    router.replace("/auth/signup");
+    router.push("/auth/signup");
   };
 
   return (
