@@ -7,6 +7,7 @@ import {
     Pressable,
     KeyboardAvoidingView,
     Platform,
+    ActivityIndicator,
 } from "react-native";
 import { BE_URL } from "@/constants/config";
 import { router, useGlobalSearchParams } from "expo-router";
@@ -17,12 +18,14 @@ const OTPInput = () => {
     const otpLength = 6;
     const [otp, setOtp] = useState(new Array(otpLength).fill(""));
     const inputRefs = useRef<Array<TextInput | null>>([]);
+    const [loading,setLoading] = useState(false)
     let { email } = useGlobalSearchParams();
     if (email === undefined) {
         email = "random@gmail.com";
     }
 
     const onSubmit = async (otp: string) => {
+        setLoading(true)
         console.log(otp);
         try {
             const response = await fetch(`${BE_URL}/auth/verifyOtp`, {
@@ -37,14 +40,17 @@ const OTPInput = () => {
             });
             const res = await response.json();
             if (!res.error) {
+                setLoading(false)
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                 router.push("/auth/login");
             } else {
                 console.log(res);
+                setLoading(false)
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
                 toast("⚠️ Invalid OTP");
             }
         } catch (error) {
+            setLoading(false)
             console.error("Network error:", error);
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             toast("⚠️ Network error, please try again");
@@ -102,10 +108,16 @@ const OTPInput = () => {
                     />
                 ))}
             </View>
-
-            <Pressable style={styles.submitBtn} onPress={() => onSubmit(otp.join(""))}>
-                <TextBox style={styles.submitText}>Verify OTP</TextBox>
-            </Pressable>
+            {
+                loading && 
+                <ActivityIndicator size={"small"} style={{paddingTop:20}} color="#c5c5c6"/>
+            }
+            {
+                !loading && 
+                <Pressable style={styles.submitBtn} onPress={() => onSubmit(otp.join(""))}>
+                    <TextBox style={styles.submitText}>Verify OTP</TextBox>
+                </Pressable>
+            }
         </KeyboardAvoidingView>
     );
 };

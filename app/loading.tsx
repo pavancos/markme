@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { View, TextBox, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import TextBox from "@/components/TextBox";
 
 export default function LoadingScreen() {
   useEffect(() => {

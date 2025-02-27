@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { useForm, Controller } from "react-hook-form";
@@ -40,6 +41,7 @@ export default function SignUpScreen() {
   const passwordRef = useRef<TextInput | null>(null);
   const fullNameRef = useRef<TextInput | null>(null);
   const [registerDetails, setRegisterDetails] = useState(null);
+  const [loading,setLoading] = useState(false)
 
   const debouncedCheckUsername = _.debounce(async (username: string) => {
     if (!username || username.length < 6) {
@@ -54,6 +56,7 @@ export default function SignUpScreen() {
   }, 500);
 
   const onSubmit = async (data: any) => {
+    setLoading(true)
     if (!isUsernameAvailable) {
       return;
     }
@@ -73,10 +76,12 @@ export default function SignUpScreen() {
         pathname: "/auth/otp",
         params: { email: data.email }
       });
+      setLoading(false)
     } else {
       console.log(res);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       toast("Cannot SignUp!");
+      setLoading(false)
     }
     console.log(data);
   };
@@ -251,7 +256,7 @@ export default function SignUpScreen() {
                       inputAndroid: styles.pickerInput,
                       placeholder: { color: "#888" },
                     }}
-                    placeholder={{ label: "Select Gender", value: null, color: "#888" }}
+                    placeholder={{ label: "Select Gender", value: "", color: "#888" }}
                     Icon={() => (
                       <ChevronDown color="#888" size={24} style={styles.iconContainer} />
                     )}
@@ -261,9 +266,16 @@ export default function SignUpScreen() {
             />
           </Pressable>
 
-          <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
-            <TextBox style={styles.submitText}>Create Account</TextBox>
-          </Pressable>
+          {
+            loading && 
+            <ActivityIndicator size={"small"} style={{paddingTop:20}} color="#c5c5c6"/>
+          }
+          {
+            !loading && 
+            <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
+              <TextBox style={styles.submitText}>Create Account</TextBox>
+            </Pressable>
+          }
         </View>
 
         <TextBox style={styles.account}>

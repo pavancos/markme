@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
+  ActivityIndicator
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import _ from "lodash";
@@ -45,8 +46,10 @@ function LoginScreenContent() {
 
   const router = useRouter();
   const passwordRef = useRef<TextInput | null>(null);
+  const [loading,setLoading] = useState(false)
 
   const onSubmit = async (data: any) => {
+    setLoading(true)
     const response = await fetch(`${BE_URL}/auth/login`, {
       method: 'POST',
       headers: {
@@ -62,10 +65,12 @@ function LoginScreenContent() {
       router.push({
         pathname: "/home",
       });
+      setLoading(false)
     } else {
       console.log(res);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       toast("Cannot Login!");
+      setLoading(false)
     }
     console.log(data);
   };
@@ -152,9 +157,17 @@ function LoginScreenContent() {
             </TextBox>
           )}
 
-          <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
-            <TextBox style={[styles.submitText, styles.font]}>Login</TextBox>
-          </Pressable>
+          {
+            loading && 
+            <ActivityIndicator size={"small"} style={{paddingTop:20}} color="#c5c5c6"/>
+          }
+          {
+            !loading && 
+            <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
+              <TextBox style={[styles.submitText, styles.font]}>Login</TextBox>
+            </Pressable>
+          }
+
         </View>
 
         <TextBox style={[styles.account, styles.font]}>
