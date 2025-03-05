@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import TextBox from './TextBox';
+import AppHeaderLogo from './svgs/AppHeaderLogo';
 
 const AppHeader = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <TextBox style={styles.title}>Markme</TextBox>
-
+        <View>
+          <AppHeaderLogo></AppHeaderLogo>
+        </View>
         <TouchableOpacity>
           <TextBox style={styles.title}>XenDev</TextBox>
         </TouchableOpacity>
@@ -18,7 +20,7 @@ const AppHeader = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#000",
+    backgroundColor: "black",
   },
   header: {
     backgroundColor: "rgba(0,0,0,0.8)",
@@ -27,10 +29,11 @@ const styles = StyleSheet.create({
     display:"flex",
     flexDirection:"row",
     justifyContent:"space-between",
+    alignItems:"center",
   },
   title: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });

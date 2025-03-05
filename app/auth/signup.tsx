@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from "react-hook-form";
 import _ from "lodash";
 import { useRouter } from "expo-router";
@@ -227,44 +228,67 @@ export default function SignUpScreen() {
           )}
 
           <TextBox style={styles.label}>Gender</TextBox>
-          <Pressable
-            onPress={() => {
-              if (pickerRef.current) {
-                // @ts-ignore
-                pickerRef.current?.togglePicker();
-              }
-            }}
-          >
+          {Platform.OS === "ios" ? (
+            <Pressable
+              onPress={() => {
+                if (pickerRef.current) {
+                  // @ts-ignore
+                  pickerRef.current?.togglePicker();
+                }
+              }}
+            >
+              <Controller
+                control={control}
+                name="gender"
+                rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <View style={styles.pickerContainer}>
+                    <RNPickerSelect
+                      ref={pickerRef}
+                      darkTheme={true}
+                      value={value}
+                      onValueChange={(gender) => onChange(gender)}
+                      items={[
+                        { label: "Male", value: "Male" },
+                        { label: "Female", value: "Female" },
+                      ]}
+                      useNativeAndroidPickerStyle={false}
+                      style={{
+                        inputIOS: styles.pickerInput,
+                        inputAndroid: styles.pickerInput,
+                        placeholder: { color: "#888" },
+                      }}
+                      placeholder={{ label: "Select Gender", value: "", color: "#888" }}
+                      Icon={() => (
+                        <ChevronDown color="#888" size={24} style={styles.iconContainer} />
+                      )}
+                    />
+                  </View>
+                )}
+              />
+            </Pressable>
+          ) : (
             <Controller
               control={control}
               name="gender"
               rules={{ required: true }}
               render={({ field: { onChange, value } }) => (
                 <View style={styles.pickerContainer}>
-                  <RNPickerSelect
-                    ref={pickerRef}
-                    darkTheme={true}
-                    value={value}
-                    onValueChange={(gender) => onChange(gender)}
-                    items={[
-                      { label: "Male", value: "Male" },
-                      { label: "Female", value: "Female" },
-                    ]}
-                    useNativeAndroidPickerStyle={false}
-                    style={{
-                      inputIOS: styles.pickerInput,
-                      inputAndroid: styles.pickerInput,
-                      placeholder: { color: "#888" },
-                    }}
-                    placeholder={{ label: "Select Gender", value: "", color: "#888" }}
-                    Icon={() => (
-                      <ChevronDown color="#888" size={24} style={styles.iconContainer} />
-                    )}
-                  />
+                  <Picker
+                    selectedValue={value}
+                    onValueChange={(itemValue) => onChange(itemValue)}
+                    style={styles.pickerInput}
+                    dropdownIconColor={'white'}
+                    
+                  >
+                    <Picker.Item label="Select Gender" value="" color="#888" />
+                    <Picker.Item label="Male" value="Male" />
+                    <Picker.Item label="Female" value="Female" />
+                  </Picker>
                 </View>
               )}
             />
-          </Pressable>
+          )}
 
           {
             loading && 
