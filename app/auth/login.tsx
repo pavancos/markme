@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import * as Haptics from 'expo-haptics';
 import {
   View,
@@ -18,6 +18,7 @@ import { toast } from "@backpackapp-io/react-native-toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts, Basic_400Regular } from "@expo-google-fonts/basic";
 import TextBox from "@/components/TextBox";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function LoginScreen() {
   const [fontsLoaded] = useFonts({
@@ -44,9 +45,15 @@ function LoginScreenContent() {
     },
   });
 
+  const { setUser, login,user } = useAuthStore();
+
+  // useEffect(()=>{
+  //   console.log('user: ', user);
+  // },[user])
+
   const router = useRouter();
   const passwordRef = useRef<TextInput | null>(null);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const onSubmit = async (data: any) => {
     setLoading(true)
@@ -62,8 +69,17 @@ function LoginScreenContent() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await AsyncStorage.setItem("token", JSON.stringify(res.payload.token));
       await AsyncStorage.setItem("username", JSON.stringify(res.payload.user.username));
+      login()
+      setUser({
+        username: res.payload.user.username,
+        email: res.payload.user.email,
+        fullname: res.payload.user.fullname,
+        profilePhoto: res.payload.user.profilePhoto,
+        gender: res.payload.user.gender,
+        token: res.payload.token
+      })
       router.push({
-        pathname: "/home",
+        pathname: "/(tabs)/home/screens/Upcoming",
       });
       setLoading(false)
     } else {
@@ -158,11 +174,11 @@ function LoginScreenContent() {
           )}
 
           {
-            loading && 
-            <ActivityIndicator size={"small"} style={{paddingTop:20}} color="#c5c5c6"/>
+            loading &&
+            <ActivityIndicator size={"small"} style={{ paddingTop: 20 }} color="#c5c5c6" />
           }
           {
-            !loading && 
+            !loading &&
             <Pressable style={styles.submitBtn} onPress={handleSubmit(onSubmit)}>
               <TextBox style={[styles.submitText, styles.font]}>Login</TextBox>
             </Pressable>

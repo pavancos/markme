@@ -17,8 +17,8 @@ export default function App() {
             try {
                 const token = await AsyncStorage.getItem("token");
                 //@ts-ignore
-                // router.replace(token ? "/auth/login" : "/auth/login");
-                router.replace(token ? "/(tabs)/home" : "/(tabs)/home");
+                router.replace(token ? "/(tabs)/home/screens/Upcoming" : "/auth/login");
+                // router.replace(token ? "/(tabs)/home" : "/(tabs)/home");
                 await new Promise(resolve => setTimeout(resolve, 2000));
             } catch (e) {
                 console.warn(e);

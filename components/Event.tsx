@@ -1,9 +1,10 @@
-import { Text, View, StyleSheet, Pressable } from 'react-native';
+import {  View,Text, StyleSheet, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import React from 'react';
 import LocationPin from './svgs/LocationPin';
 import PersonGroup from './svgs/PersonGroup';
-export function Event() {
+export function Event({ event, isPast }: any) {
+    console.log(event)
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
@@ -13,28 +14,37 @@ export function Event() {
                     contentFit="cover"
                 />
                 <View style={styles.overlay}>
-                    <Text style={styles.date}>15th, March</Text>
-                    <Text style={styles.status}>Upcoming</Text>
+                    <Text style={styles.date}>{event?.date}</Text>
+                    {
+                        event?.status === "Live" && (
+                            <Text style={styles.status}>Live</Text>
+                        )
+                    }
                 </View>
             </View>
 
             <View style={styles.textContainer}>
-                <Text style={styles.eventName}>Event Name</Text>
-                <Text style={styles.spaceName}>Space Name</Text>
+                <Text style={styles.eventName}>{event?.name}</Text>
+                <Text style={styles.spaceName}>{event?.space?.name}</Text>
                 <View style={styles.otherDetails}>
                     <View style={styles.details}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <LocationPin />
-                            <Text style={{ paddingLeft: 5,color:"#999"}} >Location</Text>
+                            <Text style={{ paddingLeft: 5, color: "#999" }} >{event?.venue}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <PersonGroup />
-                            <Text style={{ paddingLeft: 5,color:"#999"}} >100</Text>
+                            <Text style={{ paddingLeft: 5, color: "#999" }} >{event?.attendeesCount}</Text>
                         </View>
                     </View>
-                    <Pressable style={styles.markmeButton}>
-                        <Text style={styles.markmeText}>Markme</Text>
-                    </Pressable>
+                    {
+                        !isPast && (
+                            <Pressable style={styles.markmeButton}>
+                                <Text style={styles.markmeText}>Markme</Text>
+                            </Pressable>
+                        )
+                    }
+
                 </View>
             </View>
         </View>
@@ -67,7 +77,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     date: {
-        backgroundColor: '#999999',
+        backgroundColor: '#e3e3e3',
         paddingHorizontal: 15,
         paddingVertical: 5,
         borderRadius: 20,
@@ -76,11 +86,11 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     status: {
-        backgroundColor: '#aa8dd8',
+        backgroundColor: '#ff3c3c',
         paddingHorizontal: 15,
         paddingVertical: 5,
         borderRadius: 20,
-        color: '#000',
+        color: '#fff',
         fontSize: 14,
         fontWeight: '600',
     },
