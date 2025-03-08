@@ -26,7 +26,6 @@ const OTPInput = () => {
 
     const onSubmit = async (otp: string) => {
         setLoading(true)
-        console.log(otp);
         try {
             const response = await fetch(`${BE_URL}/auth/verifyOtp`, {
                 method: "POST",

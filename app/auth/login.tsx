@@ -83,12 +83,12 @@ function LoginScreenContent() {
       });
       setLoading(false)
     } else {
-      console.log(res);
+      // console.log(res);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       toast("Cannot Login!");
       setLoading(false)
     }
-    console.log(data);
+    // console.log(data);
   };
 
   return (

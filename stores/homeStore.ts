@@ -8,7 +8,7 @@ export type EventType = {
         end: Date;
     };
     status: "Upcoming" | "Live" | "Hold" | "Ongoing" | "Archived";
-    venue: string | { name: string }; // Venue can be a string or an object
+    venue: string | { name: string };
     poster?: string;
     attendeesCount?: number;
 };
@@ -39,7 +39,6 @@ export const useHomeStore = create<HomeState>((set) => ({
             const headers = new Headers();
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", `Bearer ${token}`);
-            console.log(headers)
             const response = await fetch("https://markmeengine.vercel.app/v1/user/events", {
                 method: "GET",
                 headers

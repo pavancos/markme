@@ -84,7 +84,6 @@ export default function SignUpScreen() {
       toast("Cannot SignUp!");
       setLoading(false)
     }
-    console.log(data);
   };
 
   return (

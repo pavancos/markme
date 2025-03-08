@@ -4,7 +4,6 @@ import React from 'react';
 import LocationPin from './svgs/LocationPin';
 import PersonGroup from './svgs/PersonGroup';
 export function Event({ event, isPast }: any) {
-    console.log(event)
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
