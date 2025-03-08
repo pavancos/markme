@@ -5,6 +5,8 @@ import { View, ActivityIndicator } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from "expo-font";
 import TextBox from "@/components/TextBox";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -40,9 +42,11 @@ export default function App() {
         // <View
         //     style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
         //     onLayout={onLayoutRootView}>
-        <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <TextBox style={{ color: "yellow", fontSize: 40 }}>MarkMe</TextBox>
-        </View>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <View
+                style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <TextBox style={{ color: "yellow", fontSize: 40 }}>MarkMe</TextBox>
+            </View>
+        </GestureHandlerRootView>
     );
 }

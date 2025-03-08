@@ -1,8 +1,79 @@
+// import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
+// import { Event } from "@/components/Event";
+// import { useEffect, useState, useCallback } from "react";
+// import { useHomeStore } from "@/stores/homeStore";
+// import { formatDate } from "@/utils/dateUtils";
+
+// export default function UpcomingScreen() {
+//   const [loading, setLoading] = useState(true);
+//   const [refreshing, setRefreshing] = useState(false);
+//   const { fetchEvents, events } = useHomeStore();
+
+//   useEffect(() => {
+//     fetchEvents().then(() => setLoading(false));
+//   }, []);
+
+//   const onRefresh = useCallback(async () => {
+//     setRefreshing(true);
+//     await fetchEvents();
+//     setRefreshing(false);
+//   }, []);
+
+
+//   if (loading) {
+//     return (
+//       <View style={styles.loadingContainer}>
+//         <Text style={styles.loadingText}>Loading...</Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <ScrollView
+//       style={styles.container}
+//       showsVerticalScrollIndicator={false}
+//       refreshControl={
+//         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
+//       }
+//     >
+//       {events.upcomingEvents.map((event: any, index) => (
+//         <Event key={index} event={{ ...event, date: formatDate(event?.timings?.start) }} />
+//       ))}
+//       {
+//         events.upcomingEvents.length === 0 && (
+//           <View style={styles.loadingContainer}>
+//             <Text style={styles.loadingText}>No upcoming events</Text>
+//           </View>
+//         )
+//       }
+//     </ScrollView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "black",
+//     padding: 12,
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     backgroundColor: "black",
+//   },
+//   loadingText: {
+//     color: "white",
+//   },
+// });
+
 import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import { Event } from "@/components/Event";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useHomeStore } from "@/stores/homeStore";
 import { formatDate } from "@/utils/dateUtils";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function UpcomingScreen() {
   const [loading, setLoading] = useState(true);
@@ -19,7 +90,6 @@ export default function UpcomingScreen() {
     setRefreshing(false);
   }, []);
 
-  
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -29,24 +99,24 @@ export default function UpcomingScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
-      }
-    >
-      {events.upcomingEvents.map((event: any, index) => (
-        <Event key={index} event={{ ...event, date: formatDate(event?.timings?.start) }} />
-      ))}
-      {
-        events.upcomingEvents.length === 0 && (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
+        }
+      >
+        {events.upcomingEvents.map((event: any, index) => (
+          <Event key={index} event={{ ...event, date: formatDate(event?.timings?.start) }} />
+        ))}
+        {events.upcomingEvents.length === 0 && (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>No upcoming events</Text>
           </View>
-        )
-      }
-    </ScrollView>
+        )}
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 }
 
@@ -64,5 +134,17 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: "white",
+  },
+  sheetContent: {
+    padding: 20,
+  },
+  sheetTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  sheetDescription: {
+    fontSize: 14,
+    color: "#666",
   },
 });
