@@ -66,7 +66,9 @@ function LoginScreenContent() {
     })
     const res = await response.json();
     if (!res.error) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if(Platform.OS !== "web"){
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
       await AsyncStorage.setItem("token", JSON.stringify(res.payload.token));
       await AsyncStorage.setItem("username", JSON.stringify(res.payload.user.username));
       login()
@@ -84,7 +86,9 @@ function LoginScreenContent() {
       setLoading(false)
     } else {
       // console.log(res);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      if(Platform.OS !== "web"){
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      }
       toast("Cannot Login!");
       setLoading(false)
     }

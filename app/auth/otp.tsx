@@ -39,19 +39,25 @@ const OTPInput = () => {
             });
             const res = await response.json();
             if (!res.error) {
-                setLoading(false)
-                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                setLoading(false);
+                if(Platform.OS !== "web"){
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                }
                 router.push("/auth/login");
             } else {
                 console.log(res);
                 setLoading(false)
-                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                if(Platform.OS !== "web"){
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                }
                 toast("⚠️ Invalid OTP");
             }
         } catch (error) {
             setLoading(false)
             console.error("Network error:", error);
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            if(Platform.OS !== "web"){
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            }
             toast("⚠️ Network error, please try again");
         }
     };

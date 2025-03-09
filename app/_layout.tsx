@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { toast, Toasts } from '@backpackapp-io/react-native-toast';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import EventSheet from "@/components/EventSheet";
 
 export default function Layout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +30,5 @@ export default function Layout() {
         <Stack.Screen name="auth" options={{ statusBarBackgroundColor: 'black' }} />
       )}
     </Stack>
-
   );
 }

@@ -72,7 +72,9 @@ export default function SignUpScreen() {
     const res = await response.json();
     if (!res.error) {
       setRegisterDetails(data);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if(Platform.OS !== "web"){
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
       router.push({
         pathname: "/auth/otp",
         params: { email: data.email }
@@ -80,7 +82,9 @@ export default function SignUpScreen() {
       setLoading(false)
     } else {
       console.log(res);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      if(Platform.OS !== "web"){
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      }
       toast("Cannot SignUp!");
       setLoading(false)
     }

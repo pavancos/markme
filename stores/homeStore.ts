@@ -8,7 +8,7 @@ export type EventType = {
         end: Date;
     };
     status: "Upcoming" | "Live" | "Hold" | "Ongoing" | "Archived";
-    venue: string | { name: string };
+    venue: string | { name: string, address:string };
     poster?: string;
     attendeesCount?: number;
 };

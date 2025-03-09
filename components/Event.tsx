@@ -1,52 +1,54 @@
-import {  View,Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import React from 'react';
 import LocationPin from './svgs/LocationPin';
 import PersonGroup from './svgs/PersonGroup';
-export function Event({ event, isPast }: any) {
+export function Event({ event, isPast, onClick }: any) {
     return (
-        <View style={styles.container}>
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    source="https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
-                    contentFit="cover"
-                />
-                <View style={styles.overlay}>
-                    <Text style={styles.date}>{event?.date}</Text>
-                    {
-                        event?.status === "Live" && (
-                            <Text style={styles.status}>Live</Text>
-                        )
-                    }
-                </View>
-            </View>
-
-            <View style={styles.textContainer}>
-                <Text style={styles.eventName}>{event?.name}</Text>
-                <Text style={styles.spaceName}>{event?.space?.name}</Text>
-                <View style={styles.otherDetails}>
-                    <View style={styles.details}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <LocationPin />
-                            <Text style={{ paddingLeft: 5, color: "#999" }} >{event?.venue}</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <PersonGroup />
-                            <Text style={{ paddingLeft: 5, color: "#999" }} >{event?.attendeesCount}</Text>
-                        </View>
+        <Pressable onPress={onClick}>
+            <View style={styles.container}>
+                <View style={styles.imageContainer}>
+                    <Image
+                        style={styles.image}
+                        source="https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
+                        contentFit="cover"
+                    />
+                    <View style={styles.overlay}>
+                        <Text style={styles.date}>{event?.date}</Text>
+                        {
+                            event?.status === "Live" && (
+                                <Text style={styles.status}>Live</Text>
+                            )
+                        }
                     </View>
-                    {
-                        !isPast && (
-                            <Pressable style={styles.markmeButton}>
-                                <Text style={styles.markmeText}>Markme</Text>
-                            </Pressable>
-                        )
-                    }
+                </View>
 
+                <View style={styles.textContainer}>
+                    <Text style={styles.eventName}>{event?.name}</Text>
+                    <Text style={styles.spaceName}>{event?.spaceId?.name}</Text>
+                    <View style={styles.otherDetails}>
+                        <View style={styles.details}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <LocationPin />
+                                <Text style={{ paddingLeft: 5, color: "#999" }} >{event?.venue?.name}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <PersonGroup />
+                                <Text style={{ paddingLeft: 5, color: "#999" }} >{event?.attendees?.length}</Text>
+                            </View>
+                        </View>
+                        {
+                            !isPast && (
+                                <Pressable style={styles.markmeButton}>
+                                    <Text style={styles.markmeText}>Markme</Text>
+                                </Pressable>
+                            )
+                        }
+
+                    </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     );
 }
 
