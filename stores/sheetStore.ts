@@ -36,6 +36,7 @@ export const useSheetStore = create<SheetState>((set) => ({
         set({isCreateOpen:false})
     },
     openCreateEventSheet:()=>{
+        
         set({isCreateEventOpen:true})
     },
     closeCreateEventSheet:()=>{

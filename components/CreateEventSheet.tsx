@@ -3,28 +3,17 @@ import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom
 import { useCallback, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 
-const CreateSheet = () => {
-    const { isCreateOpen, closeCreateSheet, openCreateEventSheet, openCreateSpaceSheet } = useSheetStore();
+const CreateEventSheet = () => {
+    const { isCreateEventOpen, closeCreateEventSheet } = useSheetStore();
     const bottomSheetRef = useRef<BottomSheet>(null);
 
-    const handleCreateEventPress = async()=>{
-        console.log("Create Event");
-        closeCreateSheet();
-        openCreateEventSheet();
-    }
-    const handleCreateSpacePress = async()=>{
-        console.log("Create Space");
-        closeCreateSheet();
-        openCreateSpaceSheet()
-    }
-
     useEffect(() => {
-        if (isCreateOpen) {
+        if (isCreateEventOpen) {
             bottomSheetRef.current?.snapToIndex(0);
         } else {
             bottomSheetRef.current?.close();
         }
-    }, [isCreateOpen]);
+    }, [isCreateEventOpen]);
 
     const renderBackDrop = useCallback(
         (props: any) => (
@@ -35,7 +24,7 @@ const CreateSheet = () => {
                 disappearsOnIndex={-1}
             />
         ),
-        [closeCreateSheet]
+        [closeCreateEventSheet]
     );
 
     return (
@@ -49,7 +38,7 @@ const CreateSheet = () => {
             enableDynamicSizing={false}
             onChange={(index) => {
                 if (index === -1) {
-                    closeCreateSheet();
+                    closeCreateEventSheet();
                 }
             }}
             handleStyle={styles.handle}
@@ -63,19 +52,13 @@ const CreateSheet = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.createSheetContainer}>
-                    <Text style={styles.mainHeader}>Choose One</Text>
+                    <Text style={styles.mainHeader}>Create Event</Text>
                     <View style={styles.btnContainer}>
                         <Pressable 
                             style={styles.Btn}
-                            onPress={() => handleCreateEventPress()}
+                            onPress={() => console.log("Create Event Pressed")}
                         >
                             <Text style={styles.btnText}>Create Event</Text>
-                        </Pressable>
-                        <Pressable 
-                            style={styles.Btn}
-                            onPress={() => handleCreateSpacePress()}
-                        >
-                            <Text style={styles.btnText}>Create Space</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -84,7 +67,7 @@ const CreateSheet = () => {
     );
 };
 
-export default CreateSheet;
+export default CreateEventSheet;
 
 const styles = StyleSheet.create({
     handle: {

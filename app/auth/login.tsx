@@ -80,7 +80,7 @@ function LoginScreenContent() {
         gender: res.payload.user.gender,
         token: res.payload.token
       })
-      router.push({
+      router.replace({
         pathname: "/(tabs)/home/screens/Upcoming",
       });
       setLoading(false)

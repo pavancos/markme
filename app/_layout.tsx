@@ -6,6 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import EventSheet from "@/components/EventSheet";
 import { View } from "react-native";
 import CreateSheet from "@/components/CreateSheet";
+import CreateEventSheet from "@/components/CreateEventSheet";
+import CreateSpaceSheet from "@/components/CreateSpaceSheet";
 
 export default function Layout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +39,8 @@ export default function Layout() {
       </View>
       <EventSheet />
       <CreateSheet/>
+      <CreateEventSheet/>
+      <CreateSpaceSheet/>
       <Toasts
         defaultStyle={{
           view: {

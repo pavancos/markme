@@ -48,7 +48,7 @@ export default function TabLayout() {
         options={{
           tabBarButton: () => (
             <Pressable style={styles.createButton} onPress={handleCreatePress}>
-              <MaterialCommunityIcons name="plus-circle-outline" size={26} color="white" />
+              <MaterialCommunityIcons name="plus-circle-outline" size={26} color={"#999999"} />
             </Pressable>
           ),
         }}

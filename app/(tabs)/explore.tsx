@@ -83,12 +83,8 @@ export default function ExploreScreen() {
           onChangeText={onChangeSearch}
           returnKeyType="done"
           onSubmitEditing={Keyboard.dismiss}
+          clearButtonMode="always"
         />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={clearSearch} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>✕</Text>
-          </TouchableOpacity>
-        )}
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
