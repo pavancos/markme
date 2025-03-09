@@ -1,17 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
-
-export type EventType = {
-    name: string;
-    timings: {
-        start: Date;
-        end: Date;
-    };
-    status: "Upcoming" | "Live" | "Hold" | "Ongoing" | "Archived";
-    venue: string | { name: string };
-    poster?: string;
-    attendeesCount?: number;
-};
+import { EventType } from "./homeStore";
 
 interface ExploreState {
     events: EventType[];

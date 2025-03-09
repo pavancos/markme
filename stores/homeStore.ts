@@ -1,16 +1,42 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 
+export type UserInEventType = {
+    _id:string,
+    username: string,
+    fullname: string
+}
+
+
 export type EventType = {
+    _id: string;
     name: string;
     timings: {
         start: Date;
         end: Date;
     };
     status: "Upcoming" | "Live" | "Hold" | "Ongoing" | "Archived";
-    venue: string | { name: string };
+    venue: { name: string, address:string };
     poster?: string;
-    attendeesCount?: number;
+    spaceId:{
+        _id:string,
+        name:string
+    }
+    attendees: UserInEventType[];
+    managers: UserInEventType[];
+    hosts: UserInEventType[];
+    checkedIn: UserInEventType[];
+    capacity: number;
+    description: string;
+    visibility: "Public" | "Private";
+    contactDetails:[
+        {
+            name:string,
+            email:string,
+            phone:string
+        }
+    ],
+    isManager:boolean
 };
 
 interface HomeState {
