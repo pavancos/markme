@@ -5,6 +5,7 @@ import { toast, Toasts } from '@backpackapp-io/react-native-toast';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EventSheet from "@/components/EventSheet";
 import { View } from "react-native";
+import CreateSheet from "@/components/CreateSheet";
 
 export default function Layout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +36,7 @@ export default function Layout() {
         </Stack>
       </View>
       <EventSheet />
+      <CreateSheet/>
       <Toasts
         defaultStyle={{
           view: {
