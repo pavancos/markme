@@ -9,8 +9,14 @@ export function Event({ event, isPast, onClick }: any) {
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
                     <Image
-                        style={styles.image}
-                        source="https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
+                        style={[styles.image,
+                            isPast && { filter: 'grayscale(100%)' }
+                        ]}
+                        source={
+                            event?.poster && event?.poster!=="" ?
+                            { uri: event?.poster } :
+                            "https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
+                        }
                         contentFit="cover"
                     />
                     <View style={styles.overlay}>

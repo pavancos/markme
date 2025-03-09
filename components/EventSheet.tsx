@@ -2,6 +2,7 @@ import { useSheetStore } from '@/stores/sheetStore';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import EventPage from './EventPage';
 
 const EventSheet = () => {
     const { isOpen, openBottomSheet, closeBottomSheet, selectedEvent } = useSheetStore()
@@ -17,11 +18,13 @@ const EventSheet = () => {
         <BottomSheet
             ref={bottomSheetRef}
             index={-1}
-            snapPoints={['90%']}
+            snapPoints={['100%']}
             enablePanDownToClose={true}
             // onClose={closeBottomSheet}
             // animateOnMount={true}
+            detached={true}
             enableDynamicSizing={true}
+            bottomInset={0}
             onChange={(index) => {
                 if (index === -1) {
                     // bottomSheetRef.current?.close();
@@ -42,14 +45,18 @@ const EventSheet = () => {
                 width: 40,
             }}
         >
-            <BottomSheetScrollView style={styles.contentContainer}>
-                <Text style={styles.text}>{selectedEvent?.name}</Text>
-                <Text style={styles.text}>{selectedEvent?.attendeesCount}</Text>
+            <BottomSheetScrollView style={styles.contentContainer} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+                <EventPage
+                    event={selectedEvent}
+                />
             </BottomSheetScrollView>
         </BottomSheet>
     )
 }
-export default EventSheet
+export default EventSheet;
+
+
+
 const styles = StyleSheet.create({
     text: {
         color: 'yellow',

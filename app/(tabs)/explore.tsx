@@ -74,41 +74,41 @@ export default function ExploreScreen() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search events..."
-          placeholderTextColor="gray"
-          value={searchQuery}
-          onChangeText={onChangeSearch}
-          returnKeyType="done"
-          onSubmitEditing={Keyboard.dismiss}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={clearSearch} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>✕</Text>
-          </TouchableOpacity>
-        )}
+      <View style={styles.container}>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search events..."
+            placeholderTextColor="gray"
+            value={searchQuery}
+            onChangeText={onChangeSearch}
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={clearSearch} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
+        >
+          {filteredEvents.map((event: any, index) => (
+            <Event key={index} onClick={() => {
+              openBottomSheet(event)
+            }} isPast={false} event={{ ...event, date: formatDate(event?.timings?.start) }} />
+          ))}
+          {filteredEvents.length === 0 && (
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>No events found</Text>
+            </View>
+          )}
+        </ScrollView>
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
-      >
-        {filteredEvents.map((event: any, index) => (
-          <Event key={index} onClick={() => {
-            openBottomSheet(event)
-          }} isPast={false} event={{ ...event, date: formatDate(event?.timings?.start) }} />
-        ))}
-        {filteredEvents.length === 0 && (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>No events found</Text>
-          </View>
-        )}
-      </ScrollView>
-    </View>
       <EventSheet />
-    </GestureHandlerRootView> 
+    </GestureHandlerRootView>
   );
 }
 
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     paddingHorizontal: 12,
     paddingStart: 12,
+    paddingTop: 9,
   },
   searchContainer: {
     flexDirection: "row",
