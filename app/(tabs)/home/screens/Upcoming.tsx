@@ -36,29 +36,26 @@ export default function UpcomingScreen() {
 
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ScrollView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
-        }
-      >
-        {events.upcomingEvents.map((event: any, index) => (
-          <Event  onClick={() => {
-            openBottomSheet(event)
-          }} key={index} event={{ ...event, date: formatDate(event?.timings?.start) }} />
-        ))}
-        {
-          events.upcomingEvents.length === 0 && (
-            <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>No upcoming events</Text>
-            </View>
-          )
-        }
-      </ScrollView>
-      <EventSheet/>
-    </GestureHandlerRootView>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
+      }
+    >
+      {events.upcomingEvents.map((event: any, index) => (
+        <Event onClick={() => {
+          openBottomSheet(event)
+        }} key={index} event={{ ...event, date: formatDate(event?.timings?.start) }} />
+      ))}
+      {
+        events.upcomingEvents.length === 0 && (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>No upcoming events</Text>
+          </View>
+        )
+      }
+    </ScrollView>
   );
 }
 

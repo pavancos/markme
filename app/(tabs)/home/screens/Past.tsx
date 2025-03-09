@@ -34,29 +34,26 @@ export default function PastScreen() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ScrollView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
-        }
-      >
-        {events.pastEvents.map((event: any, index) => (
-          <Event key={index} onClick={() => {
-            openBottomSheet(event)
-          }}   isPast={true} event={{ ...event, date: formatDate(event?.timings?.start) }} />
-        ))}
-        {
-          events.pastEvents.length === 0 && (
-            <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>No past events</Text>
-            </View>
-          )
-        }
-      </ScrollView>
-      <EventSheet/>
-    </GestureHandlerRootView>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
+      }
+    >
+      {events.pastEvents.map((event: any, index) => (
+        <Event key={index} onClick={() => {
+          openBottomSheet(event)
+        }} isPast={true} event={{ ...event, date: formatDate(event?.timings?.start) }} />
+      ))}
+      {
+        events.pastEvents.length === 0 && (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>No past events</Text>
+          </View>
+        )
+      }
+    </ScrollView>
   );
 }
 

@@ -74,21 +74,24 @@ const EventPage = ({ event }: EventPageProps) => {
                 {event?.capacity && event?.capacity > 0 && event?.capacity !== 9007199254740991 && (
                     <Text style={styles.sectionTitle}>Capacity: {event.capacity}</Text>
                 )}
-                <Text style={styles.sectionTitle}>Contact Details</Text>
                 {
-                    event?.contactDetails.map((contact, index) => (
-                        <View key={index} style={styles.contactRow}>
-                            <Text style={styles.description}>{contact.name}</Text>
-                            <View style={styles.contactActions}>
-                                <Pressable onPress={() => Linking.openURL(`tel:${contact.phone}`)}>
-                                    <MaterialCommunityIcons name="phone" size={20} color="#818181" />
-                                </Pressable>
-                                <Pressable onPress={() => Linking.openURL(`mailto:${contact.email}`)}>
-                                    <MaterialCommunityIcons name="email" size={20} color="#818181" />
-                                </Pressable>
+                    event?.contactDetails.length > 0 &&
+                    <>
+                        <Text style={styles.sectionTitle}>Contact Details</Text>
+                        {event?.contactDetails.map((contact, index) => (
+                            <View key={index} style={styles.contactRow}>
+                                <Text style={styles.description}>{contact.name}</Text>
+                                <View style={styles.contactActions}>
+                                    <Pressable onPress={() => Linking.openURL(`tel:${contact.phone}`)}>
+                                        <MaterialCommunityIcons name="phone" size={20} color="#818181" />
+                                    </Pressable>
+                                    <Pressable onPress={() => Linking.openURL(`mailto:${contact.email}`)}>
+                                        <MaterialCommunityIcons name="email" size={20} color="#818181" />
+                                    </Pressable>
+                                </View>
                             </View>
-                        </View>
-                    ))
+                        ))}
+                    </>
                 }
             </View>
             {
