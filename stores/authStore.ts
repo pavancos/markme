@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-
+import { BE_URL } from '@/constants/config';
 type UserType = {
     username: string,
     email: string,
@@ -7,6 +7,10 @@ type UserType = {
     gender: 'Male' | 'Female'
     fullname: string,
     token: string;
+    managingSpaces: {
+        id: string;
+        name: string;
+    }[]
 }
 interface AuthState {
     isAuthenticated: boolean;
@@ -14,6 +18,7 @@ interface AuthState {
     logout: () => void;
     user: null | UserType;
     setUser: (user: UserType) => void;
+    verifyToken: ({ token }: { token: string }) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -24,5 +29,25 @@ export const useAuthStore = create<AuthState>((set) => ({
     setUser: (user: UserType) => {
         set({ isAuthenticated: true });
         set({ user });
+    },
+    verifyToken: async ({ token }: { token: string }) => {
+        try {
+            let headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            headers.append('Authorization', `Bearer ${token}`);
+            let response = await fetch(`${BE_URL}/user/verify`, {
+                method: 'GET',
+                headers: headers
+            });
+            let data;
+            if (response.ok) {
+                data = await response.json();
+            }
+            set({ isAuthenticated: true });
+            set({ user: { ...data.payload.user, token: token } });
+        } catch (e) {
+            set({ isAuthenticated: false });
+            set({ user: null });
+        }
     }
 }));

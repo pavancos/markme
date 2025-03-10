@@ -78,7 +78,8 @@ function LoginScreenContent() {
         fullname: res.payload.user.fullname,
         profilePhoto: res.payload.user.profilePhoto,
         gender: res.payload.user.gender,
-        token: res.payload.token
+        token: res.payload.token,
+        managingSpaces: res.payload.user.managingSpaces
       })
       router.replace({
         pathname: "/(tabs)/home/screens/Upcoming",

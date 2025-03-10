@@ -5,44 +5,45 @@ import { View, ActivityIndicator } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from "expo-font";
 import TextBox from "@/components/TextBox";
-
-// SplashScreen.preventAutoHideAsync();
+import { useAuthStore } from "@/stores/authStore";
+import AppHeaderLogo from "@/components/svgs/AppHeaderLogo";
 
 export default function App() {
     const [appIsReady, setAppIsReady] = useState(false);
     const router = useRouter();
+    const { verifyToken, isAuthenticated } = useAuthStore();
+    const [tokenChecked, setTokenChecked] = useState(false);
 
     useEffect(() => {
         async function prepare() {
             try {
                 const token = await AsyncStorage.getItem("token");
-                //@ts-ignore
-                router.replace(token ? "/(tabs)/home/screens/Upcoming" : "/auth/login");
-                // router.replace(token ? "/(tabs)/home" : "/(tabs)/home");
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                if (token) {
+                    await verifyToken({ token: JSON.parse(token) });
+                    setTokenChecked(true);
+                } else {
+                    setTokenChecked(true);
+                }
+                // await new Promise(resolve => setTimeout(resolve, 2000));
             } catch (e) {
                 console.warn(e);
             } finally {
                 setAppIsReady(true);
             }
         }
-
         prepare();
     }, []);
 
-    // const onLayoutRootView = useCallback(() => {
-    //     if (appIsReady) {
-    //         SplashScreen.hideAsync();
-    //     }
-    // }, [appIsReady]);
+    useEffect(() => {
+        if (tokenChecked && appIsReady) {
+            router.replace(isAuthenticated ? "/(tabs)/home/screens/Upcoming" : "/auth/login");
+        }
+    }, [tokenChecked, isAuthenticated, appIsReady]);
 
     return (
-        // <View
-        //     style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        //     onLayout={onLayoutRootView}>
         <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <TextBox style={{ color: "yellow", fontSize: 40 }}>MarkMe</TextBox>
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "black" }}>
+            <AppHeaderLogo />
         </View>
     );
 }
