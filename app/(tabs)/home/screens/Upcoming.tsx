@@ -3,8 +3,6 @@ import { Event } from "@/components/Event";
 import { useEffect, useState, useCallback } from "react";
 import { useHomeStore } from "@/stores/homeStore";
 import { formatDate } from "@/utils/dateUtils";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import EventSheet from "@/components/EventSheet";
 import { useSheetStore } from "@/stores/sheetStore";
 
 export default function UpcomingScreen() {

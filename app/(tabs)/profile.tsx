@@ -31,8 +31,8 @@ export default function ProfileScreen() {
             />
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.name}>Eswar Aditya</Text>
-            <Text style={styles.username}>@eswaraditya</Text>
+            <Text style={styles.name}>{user?.fullname}</Text>
+            <Text style={styles.username}>@{user?.username}</Text>
             <View style={styles.stats}>
               <Text style={styles.statText}>
                 <Text style={styles.bold}>2</Text> Hosted
