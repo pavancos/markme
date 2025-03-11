@@ -38,30 +38,34 @@ export default function Layout() {
         </Stack>
       </View>
       <EventSheet />
-      <CreateSheet/>
-      <CreateEventSheet/>
-      <CreateSpaceSheet/>
+      <CreateSheet />
+      <CreateEventSheet />
+      <CreateSpaceSheet />
       <Toasts
         defaultStyle={{
           view: {
-            backgroundColor: "#c5c5c6",
+            backgroundColor: "rgba(44, 44, 46, 0.85)",
             borderRadius: 12,
-            borderWidth: 2,
-            borderColor: "rgba(44, 44, 44, 0.84)",
-            padding: 10,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.4,
+            shadowRadius: 6,
+            padding: 14,
           },
           pressable: {
-            backgroundColor: "#c5c5c6",
-            borderRadius: 32,
-            borderWidth: 1,
-            borderColor: "rgba(44, 44, 44, 0.84)",
+            backgroundColor: "rgba(44, 44, 46, 0.85)",
+            borderRadius: 16,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.4,
+            shadowRadius: 6,
           },
           text: {
-            color: "000",
+            color: "#fff",
             fontSize: 16,
+            fontWeight: "500",
           },
         }}
-
       />
     </GestureHandlerRootView>
   );

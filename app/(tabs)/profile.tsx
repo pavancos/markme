@@ -1,14 +1,15 @@
 import React, { useCallback, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Button, Text ,Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Button, Text, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function ProfileScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const router = useRouter();
-
+  const { user } = useAuthStore();
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
@@ -20,69 +21,33 @@ export default function ProfileScreen() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <View style={styles.profilecontainer}>
-      <View style={styles.profileSection}>
-        <View style={styles.avatarContainer}>
-          <Image
-            style={styles.avatar}
-            source={{ uri:"https://media.licdn.com/dms/image/sync/v2/D5627AQG48zfa8aNyMQ/articleshare-shrink_800/articleshare-shrink_800/0/1719855406372?e=2147483647&v=beta&t=MWCAoXFxJULiKlPHzh6T5k8xyWflYZGoadbYy3Bsrk8"}}
-          />
-        </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.name}>Eswar Aditya</Text>
-          <Text style={styles.username}>@eswaraditya</Text>
-          <View style={styles.stats}>
-          <Text style={styles.statText}>
-          <Text style={styles.bold}>2</Text> Hosted
-          </Text>
-          <Text style={styles.statText}>
-            <Text style={styles.bold}>4</Text> Attended
-          </Text>
-
+    <View style={styles.container}>
+      <View style={styles.profilecontainer}>
+        <View style={styles.profileSection}>
+          <View style={styles.avatarContainer}>
+            <Image
+              style={styles.avatar}
+              source={{ uri: "https://media.licdn.com/dms/image/sync/v2/D5627AQG48zfa8aNyMQ/articleshare-shrink_800/articleshare-shrink_800/0/1719855406372?e=2147483647&v=beta&t=MWCAoXFxJULiKlPHzh6T5k8xyWflYZGoadbYy3Bsrk8" }}
+            />
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>Eswar Aditya</Text>
+            <Text style={styles.username}>@eswaraditya</Text>
+            <View style={styles.stats}>
+              <Text style={styles.statText}>
+                <Text style={styles.bold}>2</Text> Hosted
+              </Text>
+              <Text style={styles.statText}>
+                <Text style={styles.bold}>4</Text> Attended
+              </Text>
+            </View>
           </View>
         </View>
       </View>
+      <TouchableOpacity onPress={handleLogout}>
+        <Text style={styles.text}>Logout</Text>
+      </TouchableOpacity>
     </View>
-
-
-        <TouchableOpacity onPress={handleLogout}>
-          <Text style={styles.text}>Logout</Text>
-        </TouchableOpacity>
-        <Button title="Open Bottom Sheet" onPress={openBottomSheet} />
-      </View>
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={['90%']}
-        enablePanDownToClose={true}
-        animateOnMount={true}
-        enableDynamicSizing={true}
-        onChange={(index)=>{
-          if(index===-1){
-            bottomSheetRef.current?.close();
-          }
-        }}
-        handleStyle={{
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-        }}
-        backgroundStyle={{
-          backgroundColor: '#1e1e1e',
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-        }}
-        handleIndicatorStyle={{
-          backgroundColor: '#818181',
-          width: 40,
-        }}
-      >
-        <BottomSheetScrollView style={styles.contentContainer}>
-          <Text style={styles.text}>Hello from Bottom Sheet</Text>
-        </BottomSheetScrollView>
-      </BottomSheet>
-    </GestureHandlerRootView>
   );
 }
 
@@ -90,6 +55,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
+    
   },
   text: {
     color: 'yellow',
@@ -105,9 +71,9 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     flexDirection: "row",
-    alignItems: "center", 
-    marginTop: 16, 
-    gap: 16, 
+    alignItems: "center",
+    marginTop: 16,
+    gap: 16,
   },
   avatarContainer: {
     width: 80,
@@ -147,4 +113,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-

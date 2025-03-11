@@ -9,28 +9,6 @@ export default function AuthLayout() {
         <SafeAreaView style={styles.container}>
             <GestureHandlerRootView style={styles.container}>
                 <Slot />
-                <Toasts
-                    defaultStyle={{
-                        view: {
-                            backgroundColor: "#c5c5c6",
-                            borderRadius: 12,
-                            borderWidth: 2,
-                            borderColor: "rgba(44, 44, 44, 0.84)",
-                            padding: 10,
-                        },
-                        pressable: {
-                            backgroundColor: "#c5c5c6",
-                            borderRadius: 32,
-                            borderWidth: 1,
-                            borderColor: "rgba(44, 44, 44, 0.84)",
-                        },
-                        text: {
-                            color: "000",
-                            fontSize: 16,
-                        },
-                    }}
-                    
-                />
             </GestureHandlerRootView>
         </SafeAreaView>
     );

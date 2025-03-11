@@ -2,15 +2,22 @@ import { Pressable, StyleSheet, Text, View, Linking, Platform } from 'react-nati
 import { EventType } from '@/stores/homeStore';
 import { Image } from 'expo-image';
 import { formatDate } from '@/utils/dateUtils';
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/stores/authStore';
+import { useState, useEffect } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { markmeEvent } from '@/utils/eventUtils';
+import { toast } from '@backpackapp-io/react-native-toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useExploreStore } from '@/stores/exploreStore';
+import { useHomeStore } from '@/stores/homeStore';
+import * as Haptics from 'expo-haptics';
+import { useAuthStore } from '@/stores/authStore';
+
 interface EventPageProps {
     event: EventType;
 }
-
 const EventPage = ({ event }: EventPageProps) => {
-    const { user } = useAuthStore();
+    const { fetchAllEvents } = useExploreStore();
+    const { fetchEvents } = useHomeStore()
     const [attendeesVisible, setAttendeesVisible] = useState(false);
     const startDate = new Date(event?.timings.start);
     const endDate = new Date(event?.timings.end);
@@ -19,9 +26,11 @@ const EventPage = ({ event }: EventPageProps) => {
     const startTime = startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const endTime = endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const isSameDay = startDay === endDay;
-    const handleMarkMe = () => {
-        console.log("I marked me");
-    };
+    const { user } = useAuthStore();
+    const [isMarked, setIsMarked] = useState(false);
+    useEffect(() => {
+        setIsMarked(event?.attendees?.some((attendee: any) => attendee.username === user?.username));
+    }, [event, user]);
     const handleOpenMaps = (venueName: string, venueAddress: string) => {
         const location = `${venueName}, ${venueAddress}`;
         const url = Platform.select({
@@ -42,6 +51,7 @@ const EventPage = ({ event }: EventPageProps) => {
             Linking.openURL(url);
         }
     };
+
     return (
         <View style={styles.container}>
             <Image
@@ -52,9 +62,63 @@ const EventPage = ({ event }: EventPageProps) => {
             <View style={styles.content}>
                 <Text style={styles.eventName}>{event?.name}</Text>
                 <Text style={styles.spaceName}>{event?.spaceId.name}</Text>
-                <Pressable style={styles.markMeButton} onPress={handleMarkMe}>
-                    <Text style={styles.markMeText}>Mark Me</Text>
-                </Pressable>
+                {
+                    !isMarked ? (
+                        <Pressable style={styles.markMeButton}
+                            onPress={async () => {
+                                console.log("Markme");
+                                let token = await AsyncStorage.getItem('token');
+                                if (!token) {
+                                    return;
+                                }
+                                token = JSON.parse(token);
+                                if (token) {
+                                    await markmeEvent(event._id, token);
+                                }
+                                if (Platform.OS !== "web") {
+                                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                                }
+                                setIsMarked(true);
+                                toast("You've Marked yourself for event")
+                                await fetchAllEvents();
+                                await fetchEvents();
+                            }}
+                        >
+                            <Text style={styles.markMeText}>Mark Me</Text>
+                        </Pressable>
+                    ) : (
+                        <Pressable style={[styles.markMeButton,{
+                            backgroundColor: '#00000000',
+                            borderWidth: 2,
+                            borderColor: '#FFD700',
+                            
+                        }]}
+                            onPress={async () => {
+                                console.log("Un Markme");
+                                let token = await AsyncStorage.getItem('token');
+                                if (!token) {
+                                    return;
+                                }
+                                token = JSON.parse(token);
+                                if (token) {
+                                    await markmeEvent(event._id, token);
+                                }
+                                if (Platform.OS !== "web") {
+                                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                                }
+                                setIsMarked(false);
+                                toast("You've Un-Marked yourself for event")
+                                await fetchAllEvents();
+                                await fetchEvents();
+                            }}
+                        >
+                            <Text style={[styles.markMeText,{
+                                color: '#FFD700',
+                            }]}>UnMark Me</Text>
+                        </Pressable>
+
+                    )
+                }
                 <Text style={styles.sectionTitle}>About Event</Text>
                 <Text style={styles.description}>{event?.description}</Text>
                 <View style={styles.row}>
@@ -95,19 +159,27 @@ const EventPage = ({ event }: EventPageProps) => {
                 }
             </View>
             {
-                event?.isManager && (
+                event?.isManager && event?.attendees.length > 0 && (
                     <View style={styles.content}>
                         {
-                            event?.attendees.length >= 0 &&
                             <>
                                 <Pressable onPress={() => setAttendeesVisible(!attendeesVisible)}>
-                                    <Text style={styles.sectionTitle}>Attendees</Text>
+                                    <Text style={[styles.sectionTitle, {
+                                        marginTop: 0,
+                                    }]}>Attendees</Text>
                                 </Pressable>
                                 {
                                     attendeesVisible && (
-                                        <View style={styles.row}>
+                                        <View style={[{
+                                            flexWrap: 'wrap',
+                                            flexDirection: 'column-reverse',
+                                            height: 'auto',
+                                        }]}>
                                             {event?.attendees.map((attendee, index) => (
-                                                <Text key={index} style={styles.description}>{attendee.fullname}</Text>
+                                                <Text key={index} style={{
+                                                    color: '#fff',
+                                                    fontSize: 16,
+                                                }}>{attendee.fullname}</Text>
                                             ))}
                                         </View>
                                     )
@@ -134,6 +206,11 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 250,
         borderRadius: 15,
+        shadowColor: '#fff',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 1,
+        shadowRadius: 5,
+        elevation: 5,
     },
     content: {
         marginTop: 20,

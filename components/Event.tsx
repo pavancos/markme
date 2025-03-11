@@ -1,21 +1,36 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { Image } from 'expo-image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LocationPin from './svgs/LocationPin';
 import PersonGroup from './svgs/PersonGroup';
+import { markmeEvent, unMarkmeEvent } from '../utils/eventUtils'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { toast } from '@backpackapp-io/react-native-toast';
+import { useExploreStore } from '@/stores/exploreStore';
+import { useHomeStore } from '@/stores/homeStore';
+import * as Haptics from 'expo-haptics';
+import { useAuthStore } from '@/stores/authStore';
 export function Event({ event, isPast, onClick }: any) {
+    const { fetchAllEvents, events } = useExploreStore();
+    const { fetchEvents } = useHomeStore()
+    const { user } = useAuthStore();
+    const [isMarked, setIsMarked] = useState(false);
+    useEffect(() => {
+        setIsMarked(event?.attendees?.some((attendee: any) => attendee.username === user?.username));
+    }, [event, user]);
+    
     return (
         <Pressable onPress={onClick}>
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
                     <Image
                         style={[styles.image,
-                            isPast && { filter: 'grayscale(100%)' }
+                        isPast && { opacity: 0.5 }
                         ]}
                         source={
-                            event?.poster && event?.poster!=="" ?
-                            { uri: event?.poster } :
-                            "https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
+                            event?.poster && event?.poster !== "" ?
+                                { uri: event?.poster } :
+                                "https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
                         }
                         contentFit="cover"
                     />
@@ -45,12 +60,60 @@ export function Event({ event, isPast, onClick }: any) {
                         </View>
                         {
                             !isPast && (
-                                <Pressable style={styles.markmeButton}>
-                                    <Text style={styles.markmeText}>Markme</Text>
-                                </Pressable>
+                                !isMarked ? (
+                                    <Pressable
+                                        onPress={async () => {
+                                            console.log("Markme");
+                                            let token = await AsyncStorage.getItem('token');
+                                            if (!token) {
+                                                return;
+                                            }
+                                            token = JSON.parse(token);
+                                            if (token) {
+                                                await markmeEvent(event._id, token);
+                                            }
+                                            setIsMarked(true);
+                                            toast("You've Marked yourself for event");
+                                            if (Platform.OS !== "web") {
+                                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                                            }
+                                            await fetchAllEvents();
+                                            await fetchEvents();
+                                        }}
+                                        style={styles.markmeButton}>
+                                        <Text style={styles.markmeText}>Markme</Text>
+                                    </Pressable>
+                                ) : (
+                                    <Pressable
+                                        onPress={async () => {
+                                            console.log("Un-Markme");
+                                            let token = await AsyncStorage.getItem('token');
+                                            if (!token) {
+                                                return;
+                                            }
+                                            token = JSON.parse(token);
+                                            if (token) {
+                                                await unMarkmeEvent(event._id, token);
+                                            }
+                                            setIsMarked(false);
+                                            toast("You've Un-Marked yourself for event");
+                                            if (Platform.OS !== "web") {
+                                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                                            }
+                                            await fetchAllEvents();
+                                            await fetchEvents();
+                                        }}
+                                        style={styles.markmeButton}>
+                                        <Text style={[styles.markmeText,{
+                                            backgroundColor:'#0000000',
+                                            borderColor:'#ffe93f',
+                                            borderWidth:1,
+                                            color:'#ffe93f'
+                                        }]}>UnMark</Text>
+                                    </Pressable>
+                                )
                             )
                         }
-
                     </View>
                 </View>
             </View>

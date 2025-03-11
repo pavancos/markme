@@ -11,6 +11,9 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { useAuthStore } from '@/stores/authStore';
 import SpacePicker from './SpacePicker';
 import RNPickerSelect from 'react-native-picker-select';
+import { toast } from '@backpackapp-io/react-native-toast';
+import { BE_URL } from '@/constants/config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateEventSheet = () => {
     const { isCreateEventOpen, closeCreateEventSheet } = useSheetStore();
@@ -62,6 +65,9 @@ const CreateEventSheet = () => {
             bottomSheetRef.current?.snapToIndex(0)
         } else {
             bottomSheetRef.current?.close();
+            reset();
+            setStartDate(startDateTime);
+            setEndDate(endDateTime);
         }
     }, [isCreateEventOpen]);
     const [showPicker, setShowPicker] = useState(false);
@@ -94,9 +100,29 @@ const CreateEventSheet = () => {
         }
         setShowPicker(false);
     };
-
     const onCreateEvent = async (data: any) => {
         console.log(data);
+        closeCreateEventSheet();
+        let token = await AsyncStorage.getItem('token');
+        if (!token) {
+            toast('Please login to create an event');
+            return;
+        }
+        token = JSON.parse(token);
+        const res = await fetch(`${BE_URL}/event/create`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+        if (res.ok) {
+            toast('Event created successfully');
+        } else {
+            toast('Failed to create event');
+        }
+        
     }
 
     return (
@@ -148,7 +174,7 @@ const CreateEventSheet = () => {
                     <Text style={styles.label}>Description</Text>
                     <Controller
                         control={control}
-                        rules={{ required: false }}
+                        rules={{ required: true }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <BottomSheetTextInput
                                 style={styles.input}
@@ -162,6 +188,7 @@ const CreateEventSheet = () => {
                         )}
                         name="eventDetails.description"
                     />
+                    {errors.eventDetails?.description?.type === 'required' && <Text style={styles.errorText}>Description is required</Text>}
                     <Text style={styles.label}>Start Date & Time</Text>
                     {isIOS ? (
                         <DateTimePicker

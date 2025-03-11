@@ -67,6 +67,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }: { color: ColorValue }) => (
             <MaterialCommunityIcons name="account-outline" size={26} color={color} />
           ),
+          headerBackButtonDisplayMode: "default"
         }}
       />
     </Tabs>
