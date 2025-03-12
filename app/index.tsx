@@ -7,12 +7,13 @@ import { useFonts } from "expo-font";
 import TextBox from "@/components/TextBox";
 import { useAuthStore } from "@/stores/authStore";
 import AppHeaderLogo from "@/components/svgs/AppHeaderLogo";
-
+import { useProfileStore } from "@/stores/profileStore";
 export default function App() {
     const [appIsReady, setAppIsReady] = useState(false);
     const router = useRouter();
     const { verifyToken, isAuthenticated } = useAuthStore();
     const [tokenChecked, setTokenChecked] = useState(false);
+    const {profile, fetchProfile} = useProfileStore();
 
     useEffect(() => {
         async function prepare() {
@@ -20,6 +21,7 @@ export default function App() {
                 const token = await AsyncStorage.getItem("token");
                 if (token) {
                     await verifyToken({ token: JSON.parse(token) });
+                    await fetchProfile(JSON.parse(token));
                     setTokenChecked(true);
                 } else {
                     setTokenChecked(true);

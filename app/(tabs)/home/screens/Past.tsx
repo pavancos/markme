@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { Event } from "@/components/Event";
 import { useEffect, useState, useCallback } from "react";
 import { useHomeStore } from "@/stores/homeStore";
@@ -26,12 +26,16 @@ export default function PastScreen() {
 
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
+      return (
+        <View style={[styles.loadingContainer,{
+          justifyContent: "center",
+          alignItems: "center",
+          flex:1
+        }]}>
+          <ActivityIndicator size="large" color="white" />
+        </View>
+      );
+    }
 
   return (
     <ScrollView

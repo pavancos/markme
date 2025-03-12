@@ -7,6 +7,7 @@ import {
   TextInput,
   Keyboard,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useExploreStore } from "@/stores/exploreStore";
@@ -66,8 +67,12 @@ export default function ExploreScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
+      <View style={[styles.loadingContainer, {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1
+      }]}>
+        <ActivityIndicator size="large" color="white" />
       </View>
     );
   }

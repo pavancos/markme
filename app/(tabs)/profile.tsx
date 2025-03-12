@@ -1,19 +1,26 @@
-import React, { useCallback, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Button, Text, Image } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, Button, Text, Image, ScrollView, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import { useAuthStore } from '@/stores/authStore';
+import { useProfileStore } from '@/stores/profileStore';
+import TextBox from '@/components/TextBox';
+import SpaceItem from '@/components/SpaceItem';
 
 export default function ProfileScreen() {
-  const bottomSheetRef = useRef<BottomSheet>(null);
   const router = useRouter();
   const { user } = useAuthStore();
+  const { profile, fetchProfile } = useProfileStore();
+  const [refreshing, setRefreshing] = useState(false);
 
-  const openBottomSheet = () => {
-    bottomSheetRef.current?.expand();
-  };
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      await fetchProfile(JSON.parse(token));
+    }
+    setRefreshing(false);
+  }, [fetchProfile]);
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('token');
@@ -22,44 +29,71 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.profilecontainer}>
-        <View style={styles.profileSection}>
-          <View style={styles.avatarContainer}>
-            <Image
-              style={styles.avatar}
-              source={{ uri: "https://media.licdn.com/dms/image/sync/v2/D5627AQG48zfa8aNyMQ/articleshare-shrink_800/articleshare-shrink_800/0/1719855406372?e=2147483647&v=beta&t=MWCAoXFxJULiKlPHzh6T5k8xyWflYZGoadbYy3Bsrk8" }}
-            />
-          </View>
-          <View style={styles.infoContainer}>
-            <Text style={styles.name}>{user?.fullname}</Text>
-            <Text style={styles.username}>@{user?.username}</Text>
-            <View style={styles.stats}>
-              <Text style={styles.statText}>
-                <Text style={styles.bold}>2</Text> Hosted
-              </Text>
-              <Text style={styles.statText}>
-                <Text style={styles.bold}>4</Text> Attended
-              </Text>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View style={styles.profilecontainer}>
+          <View style={styles.profileSection}>
+            <View style={styles.avatarContainer}>
+              <Image
+                style={styles.avatar}
+                source={{ uri: "https://media.licdn.com/dms/image/sync/v2/D5627AQG48zfa8aNyMQ/articleshare-shrink_800/articleshare-shrink_800/0/1719855406372?e=2147483647&v=beta&t=MWCAoXFxJULiKlPHzh6T5k8xyWflYZGoadbYy3Bsrk8" }}
+              />
+            </View>
+            <View style={styles.infoContainer}>
+              <TextBox style={styles.name}>{profile.name}</TextBox>
+              <TextBox style={styles.username}>@{profile.username}</TextBox>
+              <View style={styles.stats}>
+                <TextBox style={styles.statText}>
+                  <TextBox style={styles.bold}>{profile.managingEvents.length}</TextBox> Hosted
+                </TextBox>
+                <TextBox style={styles.statText}>
+                  <TextBox style={styles.bold}>{profile.registeredEvents.length}</TextBox> Attended
+                </TextBox>
+                <TextBox style={styles.statText}>
+                  <TextBox style={styles.bold}>{profile.followingSpaces.length}</TextBox> Following
+                </TextBox>
+              </View>
             </View>
           </View>
+
+          <View style={styles.profileSection}>
+            <TextBox style={{
+              color: "#FFFFFF",
+              fontSize: 20,
+              fontWeight: "bold",
+              marginBottom: 18,
+            }}>Managing Spaces</TextBox>
+          </View>
+          {
+            profile.managingSpaces.map((space: any) => {
+              return (
+                <SpaceItem key={space._id} space={space}/>
+              )
+            })
+          }
         </View>
-      </View>
-      <TouchableOpacity onPress={handleLogout}>
-        <Text style={styles.text}>Logout</Text>
-      </TouchableOpacity>
+
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: 'black',
-    
   },
   text: {
     color: 'yellow',
     fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 20,
   },
   contentContainer: {
     backgroundColor: '#1e1e1e',
@@ -92,12 +126,12 @@ const styles = StyleSheet.create({
   },
   name: {
     color: "#FFFFFF",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
   },
   username: {
     color: "#AAAAAA",
-    fontSize: 14,
+    fontSize: 15,
     marginVertical: 4,
   },
   stats: {
@@ -106,7 +140,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: 15,
     marginRight: 16,
   },
   bold: {

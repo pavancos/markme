@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, ScrollView, RefreshControl, Pressable } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, RefreshControl, Pressable, ActivityIndicator } from 'react-native';
 import TextBox from '@/components/TextBox';
 import { useEffect, useRef, useState } from 'react';
 import { Event } from '@/components/Event';
@@ -29,8 +29,12 @@ export default function NotificationsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading</Text>
+      <View style={[styles.loadingContainer,{
+        justifyContent: "center",
+        alignItems: "center",
+        flex:1
+      }]}>
+        <ActivityIndicator size="large" color="white" />
       </View>
     );
   }
