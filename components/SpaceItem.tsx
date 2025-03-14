@@ -1,5 +1,5 @@
 import { SpaceType } from '@/stores/profileStore'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import TextBox from './TextBox';
 import { useHaptic } from '@/hook/useHaptic';
 import SpaceArrow from './svgs/SpaceArrow';
@@ -13,22 +13,19 @@ interface SpaceItemProps {
 const SpaceItem = ({ space }: SpaceItemProps) => {
     const haptic = useHaptic();
     return (
-        <View style={styles.spaceContainer}>
-            <Link
-                key={space._id}
-                onPress={() => {
-                    haptic("selection");
-                    // @ts-ignore
-                }}
-                href={{
-                    pathname: '/space/[id]',
-                    params: { id: space._id }
-                }}
-            >
+        <Pressable
+            key={space._id}
+            onPress={() => {
+                haptic("selection");
+                // @ts-ignore
+                router.push(`/space/${space._id}`);
+            }}
+        >
+            <View style={styles.spaceContainer}>
                 <TextBox style={styles.spaceName}>{space.name}</TextBox>
-            </Link>
-            <SpaceArrow />
-        </View>
+                <SpaceArrow />
+            </View>
+        </Pressable>
     )
 }
 export default SpaceItem

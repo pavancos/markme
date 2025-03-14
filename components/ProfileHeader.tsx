@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         fontFamily: 'Poppins_400Regular',
+        marginRight: 5,
     },
     headerHolder: {
         flexDirection: "row",

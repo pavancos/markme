@@ -7,8 +7,8 @@ export type SpaceType = {
     _id: string;
     name:string;
     icon:string;
-    followers:UserInEventType;
-    admins:UserInEventType;
+    followers:UserInEventType[];
+    admins:UserInEventType[];
     events:EventType[];
     createdOn: Date;
 }

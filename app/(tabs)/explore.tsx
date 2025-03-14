@@ -17,6 +17,7 @@ import debounce from "lodash/debounce";
 import { useSheetStore } from "@/stores/sheetStore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import EventSheet from "@/components/EventSheet";
+import EventItem from "@/components/EventItem";
 
 export default function ExploreScreen() {
   const [loading, setLoading] = useState(true);
@@ -96,7 +97,7 @@ export default function ExploreScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
       >
         {filteredEvents.map((event: any, index) => (
-          <Event key={index} onClick={() => {
+          <EventItem key={index} onClick={() => {
             openBottomSheet(event)
           }} isPast={false} event={{ ...event, date: formatDate(event?.timings?.start) }} />
         ))}
