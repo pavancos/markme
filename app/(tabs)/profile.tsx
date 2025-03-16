@@ -1,15 +1,13 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Button, Text, Image, ScrollView, RefreshControl } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, StyleSheet, Image, ScrollView, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { useAuthStore } from '@/stores/authStore';
 import { useProfileStore } from '@/stores/profileStore';
 import TextBox from '@/components/TextBox';
 import SpaceItem from '@/components/SpaceItem';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const { profile, fetchProfile } = useProfileStore();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -42,7 +40,7 @@ export default function ProfileScreen() {
             <View style={styles.avatarContainer}>
               <Image
                 style={styles.avatar}
-                source={{ uri: "https://media.licdn.com/dms/image/sync/v2/D5627AQG48zfa8aNyMQ/articleshare-shrink_800/articleshare-shrink_800/0/1719855406372?e=2147483647&v=beta&t=MWCAoXFxJULiKlPHzh6T5k8xyWflYZGoadbYy3Bsrk8" }}
+                source={{ uri: (profile.avatar && profile.avatar!=="")? profile.avatar :"https://cdn.vectorstock.com/i/500p/08/19/gray-photo-placeholder-icon-design-ui-vector-35850819.jpg" }}
               />
             </View>
             <View style={styles.infoContainer}>
@@ -112,14 +110,14 @@ const styles = StyleSheet.create({
   avatarContainer: {
     width: 80,
     height: 80,
-    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
   },
   avatar: {
     width: "100%",
     height: "100%",
-    borderRadius: 30,
+    borderRadius: 50,
+    objectFit: "cover",
   },
   infoContainer: {
     justifyContent: "center",

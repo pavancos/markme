@@ -48,10 +48,24 @@
               }
             },
             "timePicker": {
-              "background": {"light": "#1e1e1e", "dark": "#1e1e1e"},
-              "numbersBackgroundColor": {"light": "#1e1e1e", "dark": "#1e1e1e"}
+              "background": {
+                "light": "#1e1e1e",
+                "dark": "#1e1e1e"
+              },
+              "numbersBackgroundColor": {
+                "light": "#1e1e1e",
+                "dark": "#1e1e1e"
+              }
             }
           }
+        }
+      ],
+      [
+        "expo-asset",
+        {
+          "assets":[
+            "./assets/images/event.png"
+          ]
         }
       ]
     ],

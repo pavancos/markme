@@ -6,25 +6,24 @@ import {
   RefreshControl,
   TextInput,
   Keyboard,
-  TouchableOpacity,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
+import { Image } from "expo-image";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useExploreStore } from "@/stores/exploreStore";
-import { Event } from "@/components/Event";
-import { formatDate } from "@/utils/dateUtils";
 import debounce from "lodash/debounce";
 import { useSheetStore } from "@/stores/sheetStore";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import EventSheet from "@/components/EventSheet";
 import EventItem from "@/components/EventItem";
+import TextBox from "@/components/TextBox";
+import { router } from "expo-router";
 
 export default function ExploreScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const { fetchAllEvents, events } = useExploreStore();
+  const { fetchAllEvents, events, spaces } = useExploreStore();
   const { openBottomSheet } = useSheetStore();
 
   useEffect(() => {
@@ -58,13 +57,18 @@ export default function ExploreScreen() {
     Keyboard.dismiss();
   };
 
-  const filteredEvents = useMemo(
-    () =>
-      events.filter((event: any) =>
-        event.name.toLowerCase().includes(debouncedQuery.toLowerCase())
-      ),
-    [debouncedQuery, events]
-  );
+  const filteredEvents = useMemo(() => {
+    const filteredEventList = events.filter((event: any) =>
+      event.name.toLowerCase().includes(debouncedQuery.toLowerCase())
+    );
+    return [...filteredEventList];
+  }, [debouncedQuery, events]);
+  const filteredSpaces = useMemo(() => {
+    const filteredSpaces = spaces.filter((space: any) =>
+      space.name.toLowerCase().includes(debouncedQuery.toLowerCase())
+    );
+    return [...filteredSpaces];
+  }, [debouncedQuery, spaces]);
 
   if (loading) {
     return (
@@ -73,7 +77,7 @@ export default function ExploreScreen() {
         alignItems: "center",
         flex: 1
       }]}>
-        <ActivityIndicator size="large" color="white" />
+        <ActivityIndicator size="small" color="white" />
       </View>
     );
   }
@@ -83,7 +87,7 @@ export default function ExploreScreen() {
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchBar}
-          placeholder="Search events..."
+          placeholder="Search events or spaces..."
           placeholderTextColor="gray"
           value={searchQuery}
           onChangeText={onChangeSearch}
@@ -96,10 +100,58 @@ export default function ExploreScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
       >
-        {filteredEvents.map((event: any, index) => (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.spaceWrapper}
+        >
+          {/* <View style={styles.spaceContainer}>
+            <Image
+              style={styles.spaceIcon}
+              source={{ uri: 'https://picsum.photos/200' }}
+            />
+            <View style={styles.spaceNameWrap}>
+              <TextBox style={styles.spaceName}>Xen Dev</TextBox>
+            </View> 
+            </View>*/
+          }
+
+          {
+            filteredSpaces.sort((a, b) => new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()).map((space: any, index: number) => {
+              return (
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    router.push(`/space/${space._id}`)
+                  }}
+                >
+                  <View style={styles.spaceContainer} key={index}>
+                    <Image
+                      style={styles.spaceIcon}
+                      source={{ uri: space.icon }}
+                    />
+                    <View style={styles.spaceNameWrap}>
+                      <TextBox style={styles.spaceName}>{space.name}</TextBox>
+                    </View>
+                  </View>
+                </Pressable>
+              )
+            })
+          }
+          {
+            filteredSpaces.length === 0 && (
+              <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>No spaces found</Text>
+              </View>
+            )
+          }
+        </ScrollView>
+        {filteredEvents.sort((a, b) =>
+          new Date(a.timings.start).getTime() - new Date(b.timings.start).getTime()
+        ).map((event: any, index) => (
           <EventItem key={index} onClick={() => {
             openBottomSheet(event)
-          }} isPast={false} event={{ ...event, date: formatDate(event?.timings?.start) }} />
+          }} isPast={false} event={{ ...event }} />
         ))}
         {filteredEvents.length === 0 && (
           <View style={styles.loadingContainer}>
@@ -124,8 +176,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#1E1E1E",
     borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 12,
+    paddingHorizontal: 10
   },
   searchBar: {
     flex: 1,
@@ -149,4 +200,33 @@ const styles = StyleSheet.create({
   loadingText: {
     color: "white",
   },
+  spaceWrapper: {
+    marginVertical: 10,
+    shadowColor: 'black',
+  },
+  spaceContainer: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  spaceIcon: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+  },
+  spaceNameWrap: {
+    backgroundColor: '#1e1e1e',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    padding: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  spaceName: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600'
+  }
 });

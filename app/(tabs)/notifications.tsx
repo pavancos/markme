@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, ScrollView, RefreshControl, Pressable, ActivityIndicator } from 'react-native';
 import TextBox from '@/components/TextBox';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Event } from '@/components/Event';
 import { useSheetStore } from "@/stores/sheetStore";
 import { useHomeStore } from '@/stores/homeStore';

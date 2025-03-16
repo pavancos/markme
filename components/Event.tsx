@@ -10,6 +10,7 @@ import { useExploreStore } from '@/stores/exploreStore';
 import { useHomeStore } from '@/stores/homeStore';
 import * as Haptics from 'expo-haptics';
 import { useAuthStore } from '@/stores/authStore';
+import { useAssets } from 'expo-asset';
 export function Event({ event, isPast, onClick }: any) {
     const { fetchAllEvents, events } = useExploreStore();
     const { fetchEvents } = useHomeStore()
@@ -18,8 +19,14 @@ export function Event({ event, isPast, onClick }: any) {
     useEffect(() => {
         setIsMarked(event?.attendees?.some((attendee: any) => attendee.username === user?.username));
     }, [event, user]);
-    
+    const [assets, error] = useAssets([
+        require('../assets/images/event.png')
+    ])
+    const blurhash =
+        '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+
     return (
+
         <Pressable onPress={onClick}>
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
@@ -29,9 +36,9 @@ export function Event({ event, isPast, onClick }: any) {
                         ]}
                         source={
                             event?.poster && event?.poster !== "" ?
-                                { uri: event?.poster } :
-                                "https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
+                                { uri: event?.poster } : 'event'
                         }
+                        placeholder={{blurhash}}
                         contentFit="cover"
                     />
                     <View style={styles.overlay}>
@@ -104,11 +111,11 @@ export function Event({ event, isPast, onClick }: any) {
                                             await fetchEvents();
                                         }}
                                         style={styles.markmeButton}>
-                                        <Text style={[styles.markmeText,{
-                                            backgroundColor:'#0000000',
-                                            borderColor:'#ffe93f',
-                                            borderWidth:1,
-                                            color:'#ffe93f'
+                                        <Text style={[styles.markmeText, {
+                                            backgroundColor: '#0000000',
+                                            borderColor: '#ffe93f',
+                                            borderWidth: 1,
+                                            color: '#ffe93f'
                                         }]}>UnMark</Text>
                                     </Pressable>
                                 )

@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { EventType, UserInEventType } from "./homeStore";
 import { BE_URL } from "@/constants/config";
@@ -22,6 +21,7 @@ export type UserProfile={
     registeredEvents: EventType[];
     managingSpaces: SpaceType[];
     followingSpaces: SpaceType[];
+    notificationPreference: boolean;
 }
 
 interface ProfileState {
@@ -39,7 +39,8 @@ export const useProfileStore = create<ProfileState>((set)=>({
         managingEvents: [],
         registeredEvents: [],
         managingSpaces: [],
-        followingSpaces: []
+        followingSpaces: [],
+        notificationPreference: true
     },
     setProfile: (profile) => set({ profile }),
     fetchProfile: async (token) => {
@@ -56,6 +57,7 @@ export const useProfileStore = create<ProfileState>((set)=>({
                 return
             }
             let data = await response.json();
+            console.log('data: ', data);
             if(data.error){
                 console.error(data.error);
                 return;

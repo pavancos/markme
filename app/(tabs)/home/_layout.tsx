@@ -1,5 +1,4 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { View } from 'react-native';
 import UpcomingScreen from './screens/Upcoming';
 import PastScreen from './screens/Past';
 

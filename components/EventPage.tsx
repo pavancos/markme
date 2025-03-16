@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, Text, View, Linking, Platform } from 'react-native';
-import { EventType } from '@/stores/homeStore';
+import { Pressable, StyleSheet, Text, View, Linking, Platform, TextInput } from 'react-native';
+import { EventType, UserInEventType } from '@/stores/homeStore';
 import { Image } from 'expo-image';
 import { formatDate } from '@/utils/dateUtils';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { markmeEvent } from '@/utils/eventUtils';
 import { toast } from '@backpackapp-io/react-native-toast';
@@ -11,6 +11,7 @@ import { useExploreStore } from '@/stores/exploreStore';
 import { useHomeStore } from '@/stores/homeStore';
 import * as Haptics from 'expo-haptics';
 import { useAuthStore } from '@/stores/authStore';
+import { BE_URL } from '@/constants/config';
 
 interface EventPageProps {
     event: EventType;
@@ -19,6 +20,7 @@ const EventPage = ({ event }: EventPageProps) => {
     const { fetchAllEvents } = useExploreStore();
     const { fetchEvents } = useHomeStore()
     const [attendeesVisible, setAttendeesVisible] = useState(false);
+    const [checkedInVisible, setCheckedInVisible] = useState(false);
     const startDate = new Date(event?.timings.start);
     const endDate = new Date(event?.timings.end);
     const startDay = formatDate(startDate.toString());
@@ -28,9 +30,28 @@ const EventPage = ({ event }: EventPageProps) => {
     const isSameDay = startDay === endDay;
     const { user } = useAuthStore();
     const [isMarked, setIsMarked] = useState(false);
+    const [checkedInAttendees, setCheckedInAttendees] = useState<UserInEventType[]>([]);
+    const [checkInAttendees, setCheckInAttendees] = useState<UserInEventType[]>([]);
+
+    const refreshStates = useCallback(() => {
+        const attendees = event?.attendees || [];
+        const checkedIn = event?.checkedIn || [];
+
+        setIsMarked(attendees.some((attendee: any) => attendee.username === user?.username));
+        setCheckedInAttendees(checkedIn);
+        setCheckInAttendees(
+            attendees.filter(
+                (attendee: any) => !checkedIn.some(
+                    (checkedInAttendee: any) => checkedInAttendee.username === attendee.username
+                )
+            )
+        );
+    }, [event, user, event?.attendees, event?.checkedIn])
+
     useEffect(() => {
-        setIsMarked(event?.attendees?.some((attendee: any) => attendee.username === user?.username));
-    }, [event, user]);
+        refreshStates();
+    }, [event, user, event?.attendees, event?.checkedIn]);
+
     const handleOpenMaps = (venueName: string, venueAddress: string) => {
         const location = `${venueName}, ${venueAddress}`;
         const url = Platform.select({
@@ -51,12 +72,74 @@ const EventPage = ({ event }: EventPageProps) => {
             Linking.openURL(url);
         }
     };
+    const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
+    async function checkIn(attendee: any) {
+        console.log('attendee: ', attendee);
+        let token = await AsyncStorage.getItem('token');
+        if (!token) {
+            return;
+        }
+        token = JSON.parse(token);
+        const res = await fetch(`${BE_URL}/event/checkIn`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                eventId: event._id,
+                username: attendee.username
+            })
+        })
+        if (res.ok) {
+            toast("Checked In")
+            fetchAllEvents();
+            fetchEvents();
+            refreshStates();
+        }
+        else {
+            toast("Something Went Wrong")
+        }
+    }
+    async function unCheckIn(attendee: any) {
+        console.log('attendee: ', attendee);
+        let token = await AsyncStorage.getItem('token');
+        if (!token) {
+            return;
+        }
+        token = JSON.parse(token);
+        const res = await fetch(`${BE_URL}/event/uncheckIn`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                eventId: event._id,
+                username: attendee.username
+            })
+        })
+        if (res.ok) {
+            toast("UnChecked In")
+            fetchAllEvents();
+            fetchEvents();
+            refreshStates();
+        }
+        else {
+            toast("Something Went Wrong")
+        }
+    }
     return (
         <View style={styles.container}>
             <Image
-                style={styles.image}
-                source={event?.poster ? { uri: event?.poster } : "https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"}
+                style={[styles.image]}
+                source={
+                    event?.poster && event?.poster !== "" ?
+                        { uri: event?.poster } :
+                        "event"
+                }
+                placeholder={{ blurhash }}
                 contentFit="cover"
             />
             <View style={styles.content}>
@@ -87,11 +170,11 @@ const EventPage = ({ event }: EventPageProps) => {
                             <Text style={styles.markMeText}>Mark Me</Text>
                         </Pressable>
                     ) : (
-                        <Pressable style={[styles.markMeButton,{
+                        <Pressable style={[styles.markMeButton, {
                             backgroundColor: '#00000000',
                             borderWidth: 2,
                             borderColor: '#FFD700',
-                            
+
                         }]}
                             onPress={async () => {
                                 console.log("Un Markme");
@@ -112,7 +195,7 @@ const EventPage = ({ event }: EventPageProps) => {
                                 await fetchEvents();
                             }}
                         >
-                            <Text style={[styles.markMeText,{
+                            <Text style={[styles.markMeText, {
                                 color: '#FFD700',
                             }]}>UnMark Me</Text>
                         </Pressable>
@@ -139,7 +222,7 @@ const EventPage = ({ event }: EventPageProps) => {
                     <Text style={styles.sectionTitle}>Capacity: {event.capacity}</Text>
                 )}
                 {
-                    event?.contactDetails.length > 0 &&
+                    event?.contactDetails?.length > 0 &&
                     <>
                         <Text style={styles.sectionTitle}>Contact Details</Text>
                         {event?.contactDetails.map((contact, index) => (
@@ -159,14 +242,14 @@ const EventPage = ({ event }: EventPageProps) => {
                 }
             </View>
             {
-                event?.isManager && event?.attendees.length > 0 && (
+                event?.isManager && checkInAttendees.length > 0 && (
                     <View style={styles.content}>
                         {
                             <>
                                 <Pressable onPress={() => setAttendeesVisible(!attendeesVisible)}>
                                     <Text style={[styles.sectionTitle, {
                                         marginTop: 0,
-                                    }]}>Attendees</Text>
+                                    }]}>Attendees {checkInAttendees.length} </Text>
                                 </Pressable>
                                 {
                                     attendeesVisible && (
@@ -175,11 +258,54 @@ const EventPage = ({ event }: EventPageProps) => {
                                             flexDirection: 'column-reverse',
                                             height: 'auto',
                                         }]}>
-                                            {event?.attendees.map((attendee, index) => (
-                                                <Text key={index} style={{
-                                                    color: '#fff',
-                                                    fontSize: 16,
-                                                }}>{attendee.fullname}</Text>
+                                            {checkInAttendees.map((attendee, index) => (
+                                                <Pressable
+                                                    key={index}
+                                                    onPress={() => checkIn(attendee)}
+                                                >
+                                                    <Text key={index} style={{
+                                                        color: '#fff',
+                                                        fontSize: 16,
+                                                        marginVertical: 5,
+                                                    }}>{attendee.fullname}</Text>
+                                                </Pressable>
+                                            ))}
+                                        </View>
+                                    )
+                                }
+                            </>
+                        }
+                    </View>
+                )
+            }
+            {
+                event?.isManager && checkedInAttendees.length > 0 && (
+                    <View style={styles.content}>
+                        {
+                            <>
+                                <Pressable onPress={() => setCheckedInVisible(!checkedInVisible)}>
+                                    <Text style={[styles.sectionTitle, {
+                                        marginTop: 0,
+                                    }]}>Checked In {checkedInAttendees.length}</Text>
+                                </Pressable>
+                                {
+                                    checkedInVisible && (
+                                        <View style={[{
+                                            flexWrap: 'wrap',
+                                            flexDirection: 'column-reverse',
+                                            height: 'auto',
+                                        }]}>
+                                            {checkedInAttendees.map((attendee, index) => (
+                                                <Pressable
+                                                    key={index}
+                                                    onPress={() => unCheckIn(attendee)}
+                                                >
+                                                    <Text key={index} style={{
+                                                        color: '#fff',
+                                                        fontSize: 16,
+                                                        marginVertical: 5,
+                                                    }}>{attendee.fullname}</Text>
+                                                </Pressable>
                                             ))}
                                         </View>
                                     )

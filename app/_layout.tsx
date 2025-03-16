@@ -8,6 +8,7 @@ import { View } from "react-native";
 import CreateSheet from "@/components/CreateSheet";
 import CreateEventSheet from "@/components/CreateEventSheet";
 import CreateSpaceSheet from "@/components/CreateSpaceSheet";
+import SpaceEditSheet from "@/components/SpaceEditSheet";
 
 export default function Layout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,6 +42,7 @@ export default function Layout() {
       <CreateSheet />
       <CreateEventSheet />
       <CreateSpaceSheet />
+      <SpaceEditSheet/>
       <Toasts
         defaultStyle={{
           view: {

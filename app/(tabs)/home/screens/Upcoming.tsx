@@ -25,16 +25,16 @@ export default function UpcomingScreen() {
 
 
   if (loading) {
-      return (
-        <View style={[styles.loadingContainer,{
-          justifyContent: "center",
-          alignItems: "center",
-          flex:1
-        }]}>
-          <ActivityIndicator size="large" color="white" />
-        </View>
-      );
-    }
+    return (
+      <View style={[styles.loadingContainer, {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1
+      }]}>
+        <ActivityIndicator size="small" color="white" />
+      </View>
+    );
+  }
 
 
   return (
@@ -45,7 +45,9 @@ export default function UpcomingScreen() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />
       }
     >
-      {events.upcomingEvents.map((event: any, index) => (
+      {events.upcomingEvents.sort((a, b) =>
+        new Date(a.timings.start).getTime() - new Date(b.timings.start).getTime()
+      ).map((event: any, index) => (
         <Event onClick={() => {
           openBottomSheet(event)
         }} key={index} event={{ ...event, date: formatDate(event?.timings?.start) }} />

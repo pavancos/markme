@@ -14,6 +14,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { toast } from '@backpackapp-io/react-native-toast';
 import { BE_URL } from '@/constants/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useProfileStore } from '@/stores/profileStore';
 
 const CreateEventSheet = () => {
     const { isCreateEventOpen, closeCreateEventSheet } = useSheetStore();
@@ -24,6 +25,9 @@ const CreateEventSheet = () => {
     const now = new Date();
     const startDateTime = new Date(now);
     const endDateTime = new Date(now);
+
+    const {fetchProfile} = useProfileStore();
+
 
     endDateTime.setHours(23, 59, 0, 0);
     const [startDate, setStartDate] = useState(startDateTime);
@@ -40,6 +44,7 @@ const CreateEventSheet = () => {
             eventDetails: {
                 name: '',
                 description: '',
+                poster: '',
                 timings: {
                     start: startDateTime.toISOString(),
                     end: endDateTime.toISOString(),
@@ -119,6 +124,7 @@ const CreateEventSheet = () => {
         });
         if (res.ok) {
             toast('Event created successfully');
+            fetchProfile(token!);
         } else {
             toast('Failed to create event');
         }
@@ -189,6 +195,23 @@ const CreateEventSheet = () => {
                         name="eventDetails.description"
                     />
                     {errors.eventDetails?.description?.type === 'required' && <Text style={styles.errorText}>Description is required</Text>}
+                    <Text style={styles.label}>Poster Link</Text>
+                    <Controller
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <BottomSheetTextInput
+                                style={styles.input}
+                                placeholder="Enter Poster Link"
+                                placeholderTextColor="#888"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                returnKeyType="next"
+                            />
+                        )}
+                        name="eventDetails.poster"
+                    />
                     <Text style={styles.label}>Start Date & Time</Text>
                     {isIOS ? (
                         <DateTimePicker

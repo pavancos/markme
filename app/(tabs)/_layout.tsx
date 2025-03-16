@@ -1,10 +1,9 @@
-import { Stack, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ColorValue, Pressable, StyleSheet } from "react-native";
 import AppHeader from "@/components/AppHeader";
 import ProfileHeader from "@/components/ProfileHeader";
 import { useSheetStore } from "@/stores/sheetStore";
-import { TabList } from "expo-router/ui";
 
 export default function TabLayout() {
   const { openCreateSheet } = useSheetStore();

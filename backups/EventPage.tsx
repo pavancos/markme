@@ -8,6 +8,8 @@ interface EventPageProps {
 }
 
 const EventPage = ({ event }: EventPageProps) => {
+    const blurhash =
+        '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
     const startDate = new Date(event?.timings.start);
     const endDate = new Date(event?.timings.end);
@@ -24,9 +26,10 @@ const EventPage = ({ event }: EventPageProps) => {
                     source={
                         event?.poster && event?.poster !== "" ?
                             { uri: event?.poster } :
-                            "https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
+                            "event"
                     }
                     contentFit="cover"
+                    placeholder={{blurhash}}
                 />
             </View>
             <View style={styles.detailsContainer}>

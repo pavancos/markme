@@ -20,6 +20,8 @@ const EventItem = ({ event, onClick }: any) => {
     useEffect(() => {
         setIsMarked(event?.attendees?.some((attendee: any) => attendee.username === user?.username));
     }, [event, user]);
+    const blurhash =  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+
     return (
         <Pressable onPress={onClick}>
             <View style={styles.container}>
@@ -29,8 +31,9 @@ const EventItem = ({ event, onClick }: any) => {
                         source={
                             event?.poster && event?.poster !== "" ?
                                 { uri: event?.poster } :
-                                "https://bside.vigneshvaranasi.in/Photos/Vintage%20Car.JPEG"
+                                "event"
                         }
+                        placeholder={{blurhash}}
                         contentFit="cover"
                     />
                 </View>
@@ -42,7 +45,7 @@ const EventItem = ({ event, onClick }: any) => {
                                 event?.name
                         }</Text>
                         <View style={styles.details}>
-                            <Text style={styles.date}>{formatDate(event.timings.start)}</Text>
+                            <Text style={styles.date}>{formatDate(event?.timings?.start)}</Text>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <PersonGroup />
                                 <Text style={{ paddingLeft: 5, color: "#999" }} >{event?.attendees?.length}</Text>

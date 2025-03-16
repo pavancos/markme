@@ -1,7 +1,7 @@
 ## Todo
 
-[] Change Fonts to Albert Sans
-[] Settings {}
-[] Space in Explore
-[] Create Event Display Picture Input
-[] Add Admins and Edit Icon in Space
+[x] Change Fonts to Albert Sans
+[x] Settings {}
+[x] Space in Explore
+[X] Create Event Display Picture Input
+[x] Add Admins and Edit Icon in Space

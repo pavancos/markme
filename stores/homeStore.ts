@@ -1,3 +1,4 @@
+import { BE_URL } from "@/constants/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 
@@ -65,11 +66,10 @@ export const useHomeStore = create<HomeState>((set) => ({
             const headers = new Headers();
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", `Bearer ${token}`);
-            const response = await fetch("https://markmeengine.vercel.app/v1/user/events", {
+            const response = await fetch(BE_URL+"/user/events", {
                 method: "GET",
                 headers
             });
-
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

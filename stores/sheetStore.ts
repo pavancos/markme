@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import { EventType } from "./homeStore";
+import { SpaceType } from "./profileStore";
 
 export interface SheetState {
     isOpen: boolean;
     isCreateOpen: boolean;
     isCreateEventOpen: boolean;
     isCreateSpaceOpen: boolean;
+    isSpaceEditOpen: boolean;
     selectedEvent: any | null;
+    selectedSpace: SpaceType | null;
     openBottomSheet: (event: any) => void;
     closeBottomSheet: () => void;
     openCreateSheet:()=>void;
@@ -15,6 +18,8 @@ export interface SheetState {
     closeCreateEventSheet:()=>void;
     openCreateSpaceSheet:()=>void;
     closeCreateSpaceSheet:()=>void;
+    openSpaceEditSheet:(space: SpaceType)=>void;
+    closeSpaceEditSheet:()=>void;
 }
 
 export const useSheetStore = create<SheetState>((set) => ({
@@ -22,7 +27,9 @@ export const useSheetStore = create<SheetState>((set) => ({
     isCreateOpen: false,
     isCreateEventOpen: false,
     isCreateSpaceOpen: false,
+    isSpaceEditOpen: false,
     selectedEvent: null,
+    selectedSpace: null,
     openBottomSheet: (event: any) => {
         set({ isOpen: true, selectedEvent: event });
     },
@@ -47,5 +54,12 @@ export const useSheetStore = create<SheetState>((set) => ({
     },
     closeCreateSpaceSheet:()=>{
         set({isCreateSpaceOpen:false})
+    },
+    openSpaceEditSheet:(space: SpaceType)=>{
+        set({isSpaceEditOpen:true})
+        set({selectedSpace:space})
+    },
+    closeSpaceEditSheet:()=>{
+        set({isSpaceEditOpen:false})
     }
 }));
