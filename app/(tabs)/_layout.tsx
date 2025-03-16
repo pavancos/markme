@@ -8,7 +8,6 @@ import { useSheetStore } from "@/stores/sheetStore";
 export default function TabLayout() {
   const { openCreateSheet } = useSheetStore();
   const handleCreatePress = () => {
-    console.log("Create Button Pressed");
     openCreateSheet();
   };
   return (

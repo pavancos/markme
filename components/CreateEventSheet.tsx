@@ -106,7 +106,6 @@ const CreateEventSheet = () => {
         setShowPicker(false);
     };
     const onCreateEvent = async (data: any) => {
-        console.log(data);
         closeCreateEventSheet();
         let token = await AsyncStorage.getItem('token');
         if (!token) {

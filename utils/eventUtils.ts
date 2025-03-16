@@ -14,7 +14,7 @@ export async function markmeEvent(eventId: string, token: string) {
 
         return response.json();
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 }
 export async function unMarkmeEvent(eventId: string, token: string) {
@@ -32,6 +32,6 @@ export async function unMarkmeEvent(eventId: string, token: string) {
 
         return response.json();
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 }

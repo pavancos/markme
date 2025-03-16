@@ -45,7 +45,6 @@ const OTPInput = () => {
                 }
                 router.push("/auth/login");
             } else {
-                console.log(res);
                 setLoading(false)
                 if(Platform.OS !== "web"){
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);

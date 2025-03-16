@@ -57,7 +57,6 @@ export const useProfileStore = create<ProfileState>((set)=>({
                 return
             }
             let data = await response.json();
-            console.log('data: ', data);
             if(data.error){
                 console.error(data.error);
                 return;
@@ -66,7 +65,7 @@ export const useProfileStore = create<ProfileState>((set)=>({
                 set({ profile: data.payload });
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 }))

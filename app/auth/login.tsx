@@ -47,9 +47,6 @@ function LoginScreenContent() {
 
   const { setUser, login,user } = useAuthStore();
 
-  // useEffect(()=>{
-  //   console.log('user: ', user);
-  // },[user])
 
   const router = useRouter();
   const passwordRef = useRef<TextInput | null>(null);
@@ -86,14 +83,12 @@ function LoginScreenContent() {
       });
       setLoading(false)
     } else {
-      // console.log(res);
       if(Platform.OS !== "web"){
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       }
       toast("Cannot Login!");
       setLoading(false)
     }
-    // console.log(data);
   };
 
   return (

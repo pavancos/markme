@@ -81,7 +81,6 @@ export default function SignUpScreen() {
       });
       setLoading(false)
     } else {
-      console.log(res);
       if(Platform.OS !== "web"){
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       }

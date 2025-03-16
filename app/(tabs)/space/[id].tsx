@@ -46,7 +46,6 @@ const Space = () => {
         setIsAdmin(space.admins.some((admin) => {
           return admin.username === profile.username;
         }));
-        console.log(isAdmin);
         setLoading(false);
       } else {
         let token = await AsyncStorage.getItem('token');
@@ -63,10 +62,8 @@ const Space = () => {
             'Authorization': 'Bearer ' + token,
           }
         });
-        console.log(spaceFromRequest.status);
         if (spaceFromRequest.ok) {
           const data = await spaceFromRequest.json();
-          console.log('data: ', data);
           setCurrentSpace(data.payload.space);
           setIsFollower(data.payload.space.followers.some((follower: any) => {
             return follower.username === profile.username;
@@ -75,15 +72,10 @@ const Space = () => {
             return admin.username === profile.username;
           }));
           setLoading(false);
-          console.log("Hello from Space");
         }
       }
     }
   }, [id, profile, isAdmin]);
-
-  useEffect(() => {
-    console.log(isFollower);
-  }, [isFollower]);
 
   useEffect(() => {
     if (profile) {
@@ -110,7 +102,6 @@ const Space = () => {
   }, []);
 
   const followSpace = async () => {
-    console.log("Follow Space");
     let token = await AsyncStorage.getItem('token');
     if (!token || token === null) {
       toast("You are not Logged In");
@@ -137,7 +128,6 @@ const Space = () => {
   }
 
   const unfollowSpace = async () => {
-    console.log("UnFollow Space");
     let token = await AsyncStorage.getItem('token');
     if (!token || token === null) {
       toast("You are not Logged In");
@@ -187,7 +177,6 @@ const Space = () => {
           isAdmin &&
           <Pressable style={{ paddingLeft: 8 }}
             onPress={() => {
-              console.log("Edit Space");
               openSpaceEditSheet(currentSpace);
             }}>
             <MaterialCommunityIcons name="pencil" size={18} color="white" />

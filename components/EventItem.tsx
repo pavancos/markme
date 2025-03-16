@@ -66,7 +66,6 @@ const EventItem = ({ event, onClick }: any) => {
                             !isMarked ? (
                                 <Pressable
                                     onPress={async () => {
-                                        console.log("Markme");
                                         let token = await AsyncStorage.getItem('token');
                                         if (!token) {
                                             return;
@@ -89,7 +88,6 @@ const EventItem = ({ event, onClick }: any) => {
                             ) : (
                                 <Pressable
                                     onPress={async () => {
-                                        console.log("Un-Markme");
                                         let token = await AsyncStorage.getItem('token');
                                         if (!token) {
                                             return;

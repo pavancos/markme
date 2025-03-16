@@ -75,7 +75,6 @@ const EventPage = ({ event }: EventPageProps) => {
     const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
     async function checkIn(attendee: any) {
-        console.log('attendee: ', attendee);
         let token = await AsyncStorage.getItem('token');
         if (!token) {
             return;
@@ -103,7 +102,6 @@ const EventPage = ({ event }: EventPageProps) => {
         }
     }
     async function unCheckIn(attendee: any) {
-        console.log('attendee: ', attendee);
         let token = await AsyncStorage.getItem('token');
         if (!token) {
             return;
@@ -149,7 +147,6 @@ const EventPage = ({ event }: EventPageProps) => {
                     !isMarked ? (
                         <Pressable style={styles.markMeButton}
                             onPress={async () => {
-                                console.log("Markme");
                                 let token = await AsyncStorage.getItem('token');
                                 if (!token) {
                                     return;
@@ -177,7 +174,6 @@ const EventPage = ({ event }: EventPageProps) => {
 
                         }]}
                             onPress={async () => {
-                                console.log("Un Markme");
                                 let token = await AsyncStorage.getItem('token');
                                 if (!token) {
                                     return;

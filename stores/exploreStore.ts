@@ -37,7 +37,6 @@ export const useExploreStore = create<ExploreState>((set) => ({
 
             const data = await response.json();
             if (data && data.payload && data.payload.events) {
-                console.log(data.payload.events[0].timings.start);
                 const transformedEvents = data.payload.events.map((event: any) => ({
                     ...event,
                     timings: {

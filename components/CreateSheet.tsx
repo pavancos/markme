@@ -8,12 +8,10 @@ const CreateSheet = () => {
     const bottomSheetRef = useRef<BottomSheet>(null);
 
     const handleCreateEventPress = async()=>{
-        console.log("Create Event");
         closeCreateSheet();
         openCreateEventSheet();
     }
     const handleCreateSpacePress = async()=>{
-        console.log("Create Space");
         closeCreateSheet();
         openCreateSpaceSheet()
     }

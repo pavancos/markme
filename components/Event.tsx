@@ -70,7 +70,6 @@ export function Event({ event, isPast, onClick }: any) {
                                 !isMarked ? (
                                     <Pressable
                                         onPress={async () => {
-                                            console.log("Markme");
                                             let token = await AsyncStorage.getItem('token');
                                             if (!token) {
                                                 return;
@@ -93,7 +92,6 @@ export function Event({ event, isPast, onClick }: any) {
                                 ) : (
                                     <Pressable
                                         onPress={async () => {
-                                            console.log("Un-Markme");
                                             let token = await AsyncStorage.getItem('token');
                                             if (!token) {
                                                 return;

@@ -36,7 +36,6 @@ const settings = () => {
 
 
     async function updateFullName() {
-        console.log(name);
         if (name === profile.name) {
             toast("Name is same as before")
             return;
