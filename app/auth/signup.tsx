@@ -8,16 +8,16 @@ import {
   ScrollView,
   Platform,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { Picker } from '@react-native-picker/picker';
 import { useForm, Controller } from "react-hook-form";
 import _ from "lodash";
 import { useRouter } from "expo-router";
-import { ChevronDown } from "lucide-react-native";
-import { KeyboardAvoidingView } from "react-native";
 import { BE_URL } from "@/constants/config";
 import { toast } from "@backpackapp-io/react-native-toast";
+import { Feather } from "@expo/vector-icons";
 import TextBox from "@/components/TextBox";
 
 export default function SignUpScreen() {
@@ -262,7 +262,7 @@ export default function SignUpScreen() {
                       }}
                       placeholder={{ label: "Select Gender", value: "", color: "#888" }}
                       Icon={() => (
-                        <ChevronDown color="#888" size={24} style={styles.iconContainer} />
+                        <Feather name="chevron-down" color="#888" size={24} style={styles.iconContainer} />
                       )}
                     />
                   </View>

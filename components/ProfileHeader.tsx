@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, Pressable } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import TextBox from './TextBox';
 import AppHeaderLogo from './svgs/AppHeaderLogo';
 import ProfileSettings from './svgs/ProfileSettings';
@@ -8,7 +9,7 @@ import { router } from 'expo-router';
 const ProfileHeader = () => {
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
             <View style={styles.header}>
                 <View style={styles.headerHolder}>
                     <AppHeaderLogo />

@@ -53,7 +53,8 @@ export const useProfileStore = create<ProfileState>((set)=>({
                 }
             });
             if(!response.ok){
-                console.error('HTTP error! Status: ', response.status);
+                const errorText = await response.text();
+                console.error(`HTTP error! Status: ${response.status}, Body: ${errorText}`);
                 return
             }
             let data = await response.json();
